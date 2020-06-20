@@ -46,13 +46,21 @@
           <el-input v-model="form.tmName" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="品牌LOGO" label-width="100px">
+
+          <!-- 
+            show-file-list: 指定是否显示上传图片的列表, 如果是false, 只显示一张
+            action: 处理上传图片请求的地址  ==> 通过代理解决跨域的问题
+            on-success: 用来指定上传成功时的回调函数
+            before-upload: 在准备发上传请求前调用, 如果返回false不发请求, 用来检查文件类型和大小
+          -->
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="/dev-api/admin/product/fileUpload"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="form.logoUrl" :src="form.logoUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过50kb</div>
           </el-upload>
@@ -83,8 +91,6 @@ export default {
         tmName: '', // 品牌名称
         logoUrl: '', // 品牌logo的url
       },
-
-      imageUrl: '', // 上传的图片url
     }
   },
 
@@ -94,22 +100,33 @@ export default {
   },
 
   methods: {
-
+    /* 
+    上传成功时的回调函数
+    res: 上传请求返回的响应体数据对象  {code: 200, data: 图片url}
+    */
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      // console.log('handleAvatarSuccess()', res)
+      // 保存请求返回的图片url数据
+      this.form.logoUrl = res.data
     },
 
+    /* 
+    在准备发上传请求前调用, 如果返回false不发请求, 用来检查文件类型和大小
+    对图片的要求: 
+      类型: jpg/png  ===> image/jpeg | image/png
+      大小: <50K
+    */
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPGOrPNG = file.type === 'image/jpeg' || file.type === 'image/png'   // 利用数组来判断
+      const isLt50K = file.size / 1024 < 50
 
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+      if (!isJPGOrPNG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+      if (!isLt50K) {
+        this.$message.error('上传头像图片大小不能超过 50K!');
       }
-      return isJPG && isLt2M;
+      return isJPGOrPNG && isLt50K
     },
 
     /* 
