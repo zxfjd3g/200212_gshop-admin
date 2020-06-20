@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button type="primary" icon="el-icon-plus">添加</el-button>
+    <el-button type="primary" icon="el-icon-plus" @click="showAdd">添加</el-button>
 
     <el-table
       style="margin: 20px 0"
@@ -39,6 +39,30 @@
       @current-change="getTrademarks"
       @size-change="handleSizeChange"
     />
+
+    <el-dialog title="添加品牌" :visible.sync="isShowDialog">
+      <el-form :model="form" style="width: 80%">
+        <el-form-item label="品牌名称" label-width="100px">
+          <el-input v-model="form.tmName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌LOGO" label-width="100px">
+          <el-upload
+            class="avatar-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过50kb</div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isShowDialog = false">取 消</el-button>
+        <el-button type="primary" @click="isShowDialog = false">确 定</el-button>
+      </div>
+    </el-dialog>
     
   </div>
 </template>
@@ -53,15 +77,47 @@ export default {
       total: 0, // 总数量
       page: 1, // 当前页码
       limit: 3, // 每页数量
+
+      isShowDialog: false, // 是否显示添加的对话框
+      form: { // 用来收集品牌添加的数据
+        tmName: '', // 品牌名称
+        logoUrl: '', // 品牌logo的url
+      },
+
+      imageUrl: '', // 上传的图片url
     }
   },
 
   mounted () {
     // 异步获取第一页列表显示
-    this.getTrademarks() // getTrademarks is not defined
+    this.getTrademarks() // 如果不用this报错: getTrademarks is not defined
   },
 
   methods: {
+
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
+    },
+
+    /* 
+    显示添加的界面
+    */
+    showAdd () {
+      this.isShowDialog = true
+    },
 
     /* 
     当修改每页数量的监听回调
@@ -72,7 +128,7 @@ export default {
       // 重新获取第1页显示
       this.getTrademarks(1) // 也可不传1
     },
-    
+
     /* 
     异步获取指定页码的列表数据显示
     */
@@ -100,4 +156,27 @@ export default {
 </script>
 
 <style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
