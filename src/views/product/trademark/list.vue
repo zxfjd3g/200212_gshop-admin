@@ -24,7 +24,7 @@
       <el-table-column label="操作">
          <template slot-scope="{row, $index}">
            <el-button type="warning" size="mini" icon="el-icon-edit" @click="showUpdate(row)">修改</el-button>
-           <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
+           <el-button type="danger" size="mini" icon="el-icon-delete" @click="remove(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -100,6 +100,39 @@ export default {
   },
 
   methods: {
+
+    /* 
+    删除指定的品牌
+    */
+    remove (trademark) {
+      this.$confirm(`确定删除 ${trademark.tmName} 吗?`, '提示', {
+        type: 'warning'
+      }).then(async () => { // 点击确定的回调
+        // 发删除品牌的请求
+        const result = await this.$API.trademark.remove(trademark.id)
+        // 如果成功了, 提示成功, 重新获取列表(哪一页?)
+        if (result.code===200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+
+          // 哪一页?  显示上一页(当前页的列表数据只剩下1个)  否则显示当前页 
+          this.getTrademarks(this.trademarks.length===1 ? this.page-1 : this.page)
+        } else {
+          // 如果失败了, 提示删除失败
+          this.$message({
+            type: 'error',
+            message: '删除失败'
+          })  
+        }
+      }).catch(() => { // 点击取消的回调
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })       
+      })
+    },
     /* 
     添加或更新
     */
@@ -124,9 +157,6 @@ export default {
       } else { // 如果失败, 提示失败
         this.$message.success(`${trademark.id ? '更新' : '添加'}失败!`)
       }
-		  
-
-
     },
 
     /* 
