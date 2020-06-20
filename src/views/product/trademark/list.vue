@@ -68,7 +68,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="isShowDialog = false">取 消</el-button>
-        <el-button type="primary" @click="isShowDialog = false">确 定</el-button>
+        <el-button type="primary" @click="addOrUpdate">确 定</el-button>
       </div>
     </el-dialog>
     
@@ -100,6 +100,35 @@ export default {
   },
 
   methods: {
+    /* 
+    添加或更新
+    */
+    async addOrUpdate () {
+      // 准备数据
+      const trademark = this.form
+      let result
+      // 提交请求
+      if (trademark.id) { // 更新
+        result = await this.$API.trademark.update(trademark)
+      } else { // 添加
+        result = await this.$API.trademark.add(trademark)
+      }
+      // 如果成功, 提示成功, 并获取新的列表显示
+      if (result.code===200) {
+        this.$message.success(`${trademark.id ? '更新' : '添加'}成功!`)
+        // 关闭当前dialog
+        this.isShowDialog = false
+        // 重新获取列表显示()
+        // 哪一页?  更新显示当前页, 添加显示第一页
+        this.getTrademarks(trademark.id ? this.page : 1)
+      } else { // 如果失败, 提示失败
+        this.$message.success(`${trademark.id ? '更新' : '添加'}失败!`)
+      }
+		  
+
+
+    },
+
     /* 
     上传成功时的回调函数
     res: 上传请求返回的响应体数据对象  {code: 200, data: 图片url}
