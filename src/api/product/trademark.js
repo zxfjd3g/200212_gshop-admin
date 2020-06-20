@@ -47,10 +47,10 @@ export default {
     trademark: 没有id的品牌对象
   */
  
-  remove (trademark) {
+  add (trademark) {
     return request.post(`${api_name}/save`, trademark)
   },
-  /* remove({tmName, logoUrl}) {
+  /* add({tmName, logoUrl}) {
     return request.post(`${api_name}/save`, {tmName, logoUrl})
   }, */
 
