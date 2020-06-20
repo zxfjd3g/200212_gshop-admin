@@ -5,6 +5,8 @@ export {default as permission} from './acl/permission'
 export {default as category} from './category'
 export {default as clientUser} from './clientUser'
 export {default as order} from './order'
+export {default as trademark} from './product/trademark'
+
 
 /* {
   login: {},
@@ -13,5 +15,6 @@ export {default as order} from './order'
   permission,
   category,
   clientUser,
-  order
+  order,
+  trademark
 } */
