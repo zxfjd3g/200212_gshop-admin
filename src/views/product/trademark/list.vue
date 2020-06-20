@@ -23,7 +23,7 @@
       
       <el-table-column label="操作">
          <template slot-scope="{row, $index}">
-           <el-button type="warning" size="mini" icon="el-icon-edit">修改</el-button>
+           <el-button type="warning" size="mini" icon="el-icon-edit" @click="showUpdate(row)">修改</el-button>
            <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
         </template>
       </el-table-column>
@@ -40,7 +40,7 @@
       @size-change="handleSizeChange"
     />
 
-    <el-dialog title="添加品牌" :visible.sync="isShowDialog">
+    <el-dialog :title="form.id ? '修改品牌' : '添加品牌'" :visible.sync="isShowDialog">
       <el-form :model="form" style="width: 80%">
         <el-form-item label="品牌名称" label-width="100px">
           <el-input v-model="form.tmName" autocomplete="off"></el-input>
@@ -117,7 +117,8 @@ export default {
       大小: <50K
     */
     beforeAvatarUpload(file) {
-      const isJPGOrPNG = file.type === 'image/jpeg' || file.type === 'image/png'   // 利用数组来判断
+      // const isJPGOrPNG = file.type === 'image/jpeg' || file.type === 'image/png'   // 利用数组来判断
+      const isJPGOrPNG = ['image/jpeg', 'image/png'].indexOf(file.type)>=0
       const isLt50K = file.size / 1024 < 50
 
       if (!isJPGOrPNG) {
@@ -130,9 +131,38 @@ export default {
     },
 
     /* 
+    显示修改界面
+    trademark: 包含id/tmName/logoUrl的对象
+    */
+    showUpdate (trademark) {
+      // 将trademark指定为form
+
+      /* 
+      2个引用变量(form/trademark)指向同一个对象, 
+      如果通过一个(form)引用变量改变对象内部的属性(tmName)
+      另一个引用变量(trademark)就看到了最新的属性值
+      */
+      // this.form = trademark  // 有问题
+      /* 
+      对trademark进行一个浅拷贝
+      */
+     this.form = {...trademark}
+      
+      // 更新isShowDialog为true
+      this.isShowDialog = true
+    },
+
+    /* 
     显示添加的界面
     */
     showAdd () {
+      // 清除/重置form中的数据
+      this.form = {
+        tmName: '',
+        logoUrl: '', 
+      }
+
+      // 显示dialog
       this.isShowDialog = true
     },
 
