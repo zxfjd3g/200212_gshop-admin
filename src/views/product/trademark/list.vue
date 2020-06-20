@@ -31,11 +31,13 @@
 
     <el-pagination
       style="text-align: center"
-      :current-page="2"
+      :current-page="page"
       :page-sizes="[3, 6, 9]"
-      :page-size="3"
-      :total="15"
+      :page-size="limit"
+      :total="total"
       layout="prev, pager, next, jumper, ->, sizes, total"
+      @current-change="getTrademarks"
+      @size-change="handleSizeChange"
     />
     
   </div>
@@ -47,29 +49,52 @@ export default {
 
   data() {
     return {
-      trademarks: [
-        {
-          "id": 245,
-          "tmName": "华为",
-          "logoUrl": "http://182.92.128.115:8080/group1/M00/00/16/rBFUDF7sDuqAdTZ3AAE4yFxIm5Y002.png"
-        },
-        {
-          "id": 246,
-          "tmName": "索尼",
-          "logoUrl": "http://182.92.128.115:8080/group1/M00/00/16/rBFUDF7sDwaAA_PWAABJbc_Rb7o222.png"
-        },
-        {
-          "id": 247,
-          "tmName": "长虹",
-          "logoUrl": "http://182.92.128.115:8080/group1/M00/00/0D/rBFUDF7ItKmARAwgAAAGoVnFwgQ886.jpg"
-        }
-      ]
+      trademarks: [], // 当前页的品牌列表
+      total: 0, // 总数量
+      page: 1, // 当前页码
+      limit: 3, // 每页数量
     }
   },
 
-  async mounted () {
-    const result = await this.$API.trademark.getList(1, 5)
-    console.log('result', result)
+  mounted () {
+    // 异步获取第一页列表显示
+    this.getTrademarks() // getTrademarks is not defined
+  },
+
+  methods: {
+
+    /* 
+    当修改每页数量的监听回调
+    */
+    handleSizeChange (pageSize) {
+      // 更新limit
+      this.limit = pageSize
+      // 重新获取第1页显示
+      this.getTrademarks(1) // 也可不传1
+    },
+    
+    /* 
+    异步获取指定页码的列表数据显示
+    */
+    async getTrademarks (page=1) {
+      // 更新当前页码
+      this.page = page
+      // 调用接口请求函数发获取列表数据的请求
+      const result = await this.$API.trademark.getList(page, this.limit)
+      // 如果成功了, 更新数据显示
+      if (result.code===200) {
+        const {records, total} = result.data
+        this.trademarks = records
+        this.total = total
+      } else { // 如果失败, 提示
+        /* 
+        this.$message({
+          type: 'error',
+          message: '获取分页列表失败'
+        }) */
+        this.$message.error('获取分页列表失败')
+      }
+    }
   }
 }
 </script>
