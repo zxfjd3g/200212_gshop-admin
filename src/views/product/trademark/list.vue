@@ -3,6 +3,7 @@
     <el-button type="primary" icon="el-icon-plus" @click="showAdd">添加</el-button>
 
     <el-table
+      v-loading="loading"
       style="margin: 20px 0"
       :data="trademarks"
       border
@@ -91,6 +92,7 @@ export default {
         tmName: '', // 品牌名称
         logoUrl: '', // 品牌logo的url
       },
+      loading: false, // 是否正在请求中
     }
   },
 
@@ -118,7 +120,8 @@ export default {
           })
 
           // 哪一页?  显示上一页(当前页的列表数据只剩下1个)  否则显示当前页 
-          this.getTrademarks(this.trademarks.length===1 ? this.page-1 : this.page)
+          // 如果当前是第1页且只剩下1条数据 ==> 请求第1页数据(当前页)
+          this.getTrademarks(this.trademarks.length===1&&this.page>1 ? this.page-1 : this.page)
         } else {
           // 如果失败了, 提示删除失败
           this.$message({
@@ -241,8 +244,10 @@ export default {
     async getTrademarks (page=1) {
       // 更新当前页码
       this.page = page
+      this.loading = true // 显示loading
       // 调用接口请求函数发获取列表数据的请求
       const result = await this.$API.trademark.getList(page, this.limit)
+      this.loading = false // 隐藏loading
       // 如果成功了, 更新数据显示
       if (result.code===200) {
         const {records, total} = result.data
