@@ -1,6 +1,36 @@
 <template>
   <div>
-    <CategorySelector @categoryChange="handleCategoryChange"/>
+    <el-card>
+      <CategorySelector @categoryChange="handleCategoryChange"/>
+    </el-card>
+    <el-card style="margin-top:20px;">
+      <el-button type="primary" icon="el-icon-plus">添加属性</el-button>
+
+      <el-table :data="attrs" border>
+        <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
+        <el-table-column label="属性名称" prop="attrName" width="150"></el-table-column>
+        <el-table-column label="属性值列表">
+          <template slot-scope="{row, $index}">
+            <!-- 
+              {
+                "id": 2051,
+                "valueName": "支持存储卡",
+                "attrId": 384
+              },
+            -->
+            <el-tag type="info" v-for="value in row.attrValueList" :key="value.id">
+              {{value.valueName}}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="150">
+          <template slot-scope="{row, $index}">
+            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
 
@@ -21,6 +51,10 @@ export default {
   async mounted () {
     // const result = await this.$API.attr.getList(2, 13, 61)
     // console.log('result', result)
+    this.category1Id = 2
+    this.category2Id = 13
+    this.category3Id = 61
+    this.getAttrs()
   },
 
   methods: {
