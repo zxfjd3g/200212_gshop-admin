@@ -6,6 +6,7 @@ export {default as category} from './category'
 export {default as clientUser} from './clientUser'
 export {default as order} from './order'
 export {default as trademark} from './product/trademark'
+export {default as attr} from './product/attr'
 
 
 /* {
@@ -16,5 +17,6 @@ export {default as trademark} from './product/trademark'
   category,
   clientUser,
   order,
-  trademark
+  trademark,
+  attr
 } */
