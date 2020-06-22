@@ -55,9 +55,18 @@ export default {
     },
 
     /* 
+    什么时候分发: change事件回调中
+		事件名: categoryChange
+		携带的数据: 分类Id和分类级别(1/2/3)   {categoryId: 12, level: 1/2/3}
+    */
+
+    /* 
     选中的一级分类ID发生变化的事件回调
     */
     async handleCategory1Change (category1Id) {
+
+      // 分发分类ID发生改变的事件
+      this.$emit('categoryChange', {categoryId: category1Id, level: 1})
 
       // 重置二/三分类数据
       this.category2List = []
@@ -73,6 +82,9 @@ export default {
     选中的二级分类ID发生变化的事件回调
     */
     async handleCategory2Change (category2Id) {
+      // 分发分类ID发生改变的事件
+      this.$emit('categoryChange', {categoryId: category2Id, level: 2})
+
       // 重置三分类数据
       this.category3List = []
       this.category3Id = ''
@@ -84,8 +96,9 @@ export default {
     /* 
     选中的三级分类ID发生变化的事件回调
     */
-    handleCategory3Change () {
-
+    handleCategory3Change (category3Id) {
+      // 分发分类ID发生改变的事件
+      this.$emit('categoryChange', {categoryId: category3Id, level: 3})
     },
   }
 }
