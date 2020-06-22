@@ -47,13 +47,17 @@
           <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
           <el-table-column label="属性值名称">
             <template slot-scope="{row, $index}">
-              <el-input v-if="row.edit" v-model="row.valueName"></el-input>
-              <span v-else>{{row.valueName}}</span>
+              <el-input :ref="$index" v-if="row.edit" v-model="row.valueName" placeholder="请输入名称"
+                @blur="toList(row)" @keyup.enter.native="toList(row)"/>
+              <span v-else @click="toEdit(row, $index)">{{row.valueName}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="{row, $index}">
-              <hint-button title="删除" type="danger" icon="el-icon-delete" size="mini"></hint-button>
+              <el-popconfirm :title="`确定删除 ${row.valueName} 吗?`" 
+                @onConfirm="attr.attrValueList.splice($index, 1)">
+                 <hint-button slot="reference" title="删除" type="danger" icon="el-icon-delete" size="mini"></hint-button>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -100,6 +104,45 @@ export default {
   methods: {
 
     /* 
+    将指定属性名称从编辑模式变为查看
+    */
+    toList (attrValue) {
+      // 如果输入数据为空的, 那还是编辑模式
+      if (attrValue.valueName.trim()==='') return
+      // 如果当前输入的与原本已有重复了, 那还是编辑模式并提示
+      const isRepeat = this.attr.attrValueList
+            .filter(value => value.valueName===attrValue.valueName).length===2
+      if (isRepeat) {
+        this.$message.warning('属性名称不能重复')
+        attrValue.valueName = '' // 清除输入
+        return
+      }
+
+      // 更新edit属性为false
+      attrValue.edit = false
+    },
+
+    /* 
+    将指定属性名称从查看模式变为编辑
+    attrValue中很有可能没有edit属性
+    给响应式对象添加新属性
+      如果直接添加, 这个属性不是响应 ==> 界面不会自动更新
+      $set()/set()添加, 这个属性是响应式的  ==> 界面就会自动更新
+    */
+    toEdit (attrValue, index) {
+      // 如果attrValue对象中有edit属性
+      if (attrValue.hasOwnProperty('edit')) {
+        attrValue.edit = true
+      } else { // 如果没有
+        this.$set(attrValue, 'edit', true)
+      }
+
+      // 让当前对应的Input组件对象, 通过调用其focus()来获得焦点
+      // 必须在显示输入框后才去focus()
+      this.$nextTick(() => this.$refs[index].focus())
+    },
+
+    /* 
     添加一个新的平台属性值
     */
     addAttrValue () {
@@ -112,6 +155,9 @@ export default {
 
       // 添加到对应的数组
       this.attr.attrValueList.push(attrValue)
+
+      // 让最后一个输入框自动获得焦点
+      this.$nextTick(() => this.$refs[this.attr.attrValueList.length-1].focus())
     },
 
     /* 
