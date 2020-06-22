@@ -1,5 +1,7 @@
 <template>
-  <div>AttrList</div>
+  <div>
+    <CategorySelector/>
+  </div>
 </template>
 
 <script>
