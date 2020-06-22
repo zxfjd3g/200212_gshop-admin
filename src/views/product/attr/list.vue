@@ -4,8 +4,8 @@
       <CategorySelector @categoryChange="handleCategoryChange"/>
     </el-card>
     <el-card style="margin-top:20px;">
-      <template v-if="isShowList">
-          <el-button type="primary" icon="el-icon-plus">添加属性</el-button>
+      <div v-show="isShowList">
+        <el-button type="primary" icon="el-icon-plus" @click="showAdd">添加属性</el-button>
         <el-table :data="attrs" border v-loading="loading">
           <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
           <el-table-column label="属性名称" prop="attrName" width="150"></el-table-column>
@@ -25,26 +25,32 @@
           </el-table-column>
           <el-table-column label="操作" width="150">
             <template slot-scope="{row, $index}">
-              <hint-button title="修改属性" type="primary" icon="el-icon-edit" size="mini"></hint-button>
+              <hint-button title="修改属性" type="primary" icon="el-icon-edit" size="mini" 
+                @click="showUpdate(row)"></hint-button>
               <HintButton title="删除属性" type="danger" icon="el-icon-delete" size="mini"></HintButton>
             </template>
           </el-table-column>
         </el-table>
-      </template>
+      </div>
       
-      <template v-else>
+      <div v-show="!isShowList">
         <el-form inline>
           <el-form-item label="属性名">
-            <el-input type="text" placeholder="请输入属性名"></el-input>
+            <el-input type="text" placeholder="请输入属性名" v-model="attr.attrName"></el-input>
           </el-form-item>
         </el-form>
 
-        <el-button type="primary" icon="el-icon-plus">添加属性值</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="addAttrValue">添加属性值</el-button>
         <el-button @click="isShowList=true">取消</el-button>
 
-        <el-table border style="margin: 20px 0">
+        <el-table border style="margin: 20px 0" :data="attr.attrValueList">
           <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
-          <el-table-column label="属性值名称"></el-table-column>
+          <el-table-column label="属性值名称">
+            <template slot-scope="{row, $index}">
+              <el-input v-if="row.edit" v-model="row.valueName"></el-input>
+              <span v-else>{{row.valueName}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="{row, $index}">
               <hint-button title="删除" type="danger" icon="el-icon-delete" size="mini"></hint-button>
@@ -54,7 +60,7 @@
 
         <el-button type="primary">保存</el-button>
         <el-button @click="isShowList=true">取消</el-button>
-      </template>
+      </div>
 
     </el-card>
   </div>
@@ -72,7 +78,13 @@ export default {
       category3Id: null, // 三级分类ID
 
       attrs: [], // 属性列表
-      isShowList: false, // 是否显示属性列表界面, 如果是false显示添加&修改的界面
+      isShowList: true, // 是否显示属性列表界面, 如果是false显示添加&修改的界面
+      attr: {
+        attrName: '', // 属性名
+        attrValueList: [], // 属性值列表
+        categoryId: '', // 当前第3级分类ID
+        categoryLevel: 3, // 分类级别
+      }, // 当前要操作的属性对象
     }
   },
 
@@ -86,6 +98,48 @@ export default {
   },
 
   methods: {
+
+    /* 
+    添加一个新的平台属性值
+    */
+    addAttrValue () {
+      // 创建一个平台属性值对象
+      const attrValue =  {
+        attrId: this.attr.id, // 当前要修改属性的id
+        valueName: '', // 属性值名称
+        edit: true, // 标识为编辑模式
+      }
+
+      // 添加到对应的数组
+      this.attr.attrValueList.push(attrValue)
+    },
+
+    /* 
+    显示添加界面
+    */
+    showAdd () {
+      // 重置一下数据
+      this.attr = {
+        attrName: '', // 属性名
+        attrValueList: [], // 属性值列表
+        categoryId: this.category3Id, // 当前第3级分类ID
+        categoryLevel: 3, // 分类级别
+      }
+
+      // 显示界面
+      this.isShowList = false
+    },
+
+    /* 
+    显示修改界面
+    */
+    showUpdate (attr) {
+      // 保存attr
+      this.attr = attr
+      // 显示更新界面
+      this.isShowList = false
+    },
+
     /* 
     分类ID发生改变的监听回调
     */
