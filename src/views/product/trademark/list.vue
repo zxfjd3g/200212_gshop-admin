@@ -268,7 +268,17 @@
         }
 
         // 显示dialog
-        this.isShowDialog = true
+        this.isShowDialog = true  
+        /* 
+        数据变化必然导致界面变化
+        但界面是数据改变后异步更新的  ===> 此时界面还没有变化(就是没有显示)
+        */
+
+        // 在显示了提示信息后, 立即清除提示信息
+        // 此时dialog界面还没有显示 ==> 必须延迟到界面更新显示后再执行
+        this.$nextTick(() => {// 回调函数是迟延到界面更新后执行的   面试说
+          this.$refs.ruleForm.clearValidate()
+        })
       },
 
       /* 

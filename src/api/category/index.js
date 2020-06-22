@@ -10,6 +10,7 @@ export default {
       url: '/admin/product/getCategory1',
       method: 'get'
     })
+    // 修改为request.xxx()
   },
 
   /* 
