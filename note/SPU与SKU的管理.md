@@ -19,4 +19,19 @@
       销售属性: 出现在商品详情界面的商品描述信息, 包含属性名与一系列的属性值
 
 ## SPU与SKU相关接口请求函数
-    
+
+## SPU的分页列表界面
+	界面布局: Card / CategorySelector / Button / Table / HintButton / Pagination 
+	异步获取分页列表数据显示
+
+## SpuForm组件
+	界面布局: Form / Input / Select / Upload / Table / Button / Tag
+	控制SpuForm的显示隐藏
+		在父组件中定义标识数据: isShowSpuForm=true/false
+		通过子组件更新父组件的数据 ==>从而实现SpuForm的显示隐藏
+			使用$parent ===> 不太好, 需要多次取$parent
+			使用.sync
+				父组件: <SpuForm :visible.sync="isShowSpuForm"></SpuForm>
+				子组件: 
+					props: {visible: Boolean}
+					this.$emit('update:visible', false)
