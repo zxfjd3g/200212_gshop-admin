@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-card>
-      <CategorySelector @categoryChange="handleCategoryChange"/>
+      <CategorySelector @categoryChange="handleCategoryChange" ref="cs"/>
     </el-card>
     <el-card style="margin-top:20px;">
       <div v-show="isShowList">
-        <el-button type="primary" icon="el-icon-plus" @click="showAdd">添加属性</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="showAdd" :disabled="!category3Id">添加属性</el-button>
         <el-table :data="attrs" border v-loading="loading">
           <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
           <el-table-column label="属性名称" prop="attrName" width="150"></el-table-column>
@@ -40,7 +40,8 @@
           </el-form-item>
         </el-form>
 
-        <el-button type="primary" icon="el-icon-plus" @click="addAttrValue">添加属性值</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="addAttrValue" 
+          :disabled="!attr.attrName">添加属性值</el-button>
         <el-button @click="isShowList=true">取消</el-button>
 
         <el-table border style="margin: 20px 0" :data="attr.attrValueList">
@@ -48,7 +49,7 @@
           <el-table-column label="属性值名称">
             <template slot-scope="{row, $index}">
               <el-input :ref="$index" v-if="row.edit" v-model="row.valueName" placeholder="请输入名称"
-                @blur="toList(row)" @keyup.enter.native="toList(row)"/>
+                @blur="toList(row)" @keyup.enter.native="toList(row)" size="mini"/>
               <span v-else @click="toEdit(row, $index)">{{row.valueName}}</span>
             </template>
           </el-table-column>
@@ -62,7 +63,7 @@
           </el-table-column>
         </el-table>
 
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" :disabled="!attr.attrName || attr.attrValueList.length===0">保存</el-button>
         <el-button @click="isShowList=true">取消</el-button>
       </div>
 
@@ -92,13 +93,22 @@ export default {
     }
   },
 
+  watch: {
+    // 监视isShowList的变化
+    isShowList (value) {
+      // 让分类列表组件(子组件)的disabled变为true/false
+      // 父组件主动更新子组件的数据
+      this.$refs.cs.disabled = !value
+    }
+  },
+
   async mounted () {
     // const result = await this.$API.attr.getList(2, 13, 61)
     // console.log('result', result)
-    this.category1Id = 2
-    this.category2Id = 13
-    this.category3Id = 61
-    this.getAttrs()
+    // this.category1Id = 2
+    // this.category2Id = 13
+    // this.category3Id = 61
+    // this.getAttrs()
   },
 
   methods: {
@@ -194,11 +204,13 @@ export default {
         // 重置二级与三级分类的数据
         this.category2Id = null
         this.category3Id = null
+        this.attrs = [] // 重置属性列表
 
         this.category1Id = categoryId
       } else if (level===2) {
         // 重置三级分类的数据
         this.category3Id = null
+        this.attrs = [] // 重置属性列表
 
         this.category2Id = categoryId
       } else {

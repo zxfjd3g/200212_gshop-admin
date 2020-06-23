@@ -7,17 +7,20 @@
       },
       -->
     <el-form-item label="一级分类">
-      <el-select placeholder="请选择" v-model="category1Id" @change="handleCategory1Change">
+      <el-select placeholder="请选择" v-model="category1Id" @change="handleCategory1Change" 
+        :disabled="disabled">
         <el-option :label="c1.name" :value="c1.id" v-for="c1 in category1List"/>
       </el-select>
     </el-form-item>
     <el-form-item label="二级分类" >
-       <el-select placeholder="请选择" v-model="category2Id" @change="handleCategory2Change">
+       <el-select placeholder="请选择" v-model="category2Id" @change="handleCategory2Change"
+        :disabled="disabled">
         <el-option :label="c2.name" :value="c2.id" v-for="c2 in category2List"/>
       </el-select>
     </el-form-item>
     <el-form-item label="三级分类">
-       <el-select placeholder="请选择" v-model="category3Id" @change="handleCategory3Change">
+       <el-select placeholder="请选择" v-model="category3Id" @change="handleCategory3Change"
+        :disabled="disabled">
         <el-option :label="c3.name" :value="c3.id" v-for="c3 in category3List"/>
       </el-select>
     </el-form-item>
@@ -36,6 +39,7 @@ export default {
       category1Id: '', // 选择的一级分类id
       category2Id: '', // 选择的二级分类id
       category3Id: '', // 选择的三级分类id
+      disabled: false, // 是否禁用select
     }
   },
 
