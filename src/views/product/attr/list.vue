@@ -50,7 +50,7 @@
             <template slot-scope="{row, $index}">
               <el-input :ref="$index" v-if="row.edit" v-model="row.valueName" placeholder="请输入名称"
                 @blur="toList(row)" @keyup.enter.native="toList(row)" size="mini"/>
-              <span v-else @click="toEdit(row, $index)">{{row.valueName}}</span>
+              <span v-else @click="toEdit(row, $index)" style="display: inline-block; width: 100%">{{row.valueName}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作">
