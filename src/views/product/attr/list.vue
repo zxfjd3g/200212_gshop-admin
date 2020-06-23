@@ -27,7 +27,12 @@
             <template slot-scope="{row, $index}">
               <hint-button title="修改属性" type="primary" icon="el-icon-edit" size="mini" 
                 @click="showUpdate(row)"></hint-button>
-              <HintButton title="删除属性" type="danger" icon="el-icon-delete" size="mini"></HintButton>
+              
+              <el-popconfirm :title="`确定删除 ${row.attrName} 吗?`" 
+                @onConfirm="deleteAttr(row.id)">
+                 <HintButton slot="reference" title="删除属性" type="danger" icon="el-icon-delete" size="mini"></HintButton>
+              </el-popconfirm>
+              
             </template>
           </el-table-column>
         </el-table>
@@ -63,7 +68,8 @@
           </el-table-column>
         </el-table>
 
-        <el-button type="primary" :disabled="!attr.attrName || attr.attrValueList.length===0">保存</el-button>
+        <el-button type="primary" :disabled="!attr.attrName || attr.attrValueList.length===0"
+          @click="addOrUpdate">保存</el-button>
         <el-button @click="isShowList=true">取消</el-button>
       </div>
 
@@ -113,6 +119,49 @@ export default {
   },
 
   methods: {
+    /* 
+    删除属性
+    */
+    async deleteAttr (id) {
+      const result = await this.$API.attr.remove(id)
+      if (result.code===200) {
+        this.$message.success('删除属性成功')
+        this.getAttrs()
+      } else {
+        this.$message.error('删除属性失败')
+      }
+    },
+
+    /* 
+    添加/更新属性
+    */
+    async addOrUpdate () {
+      // 准备数据 
+      const {attr} = this
+
+      // 在发请求需要对数据进行必要的整理与检查操作
+      /* 
+      没有指定属性值名称的属性也会提交给后台
+      提交的数据中包含没必要的edit属性
+      如果一个属性值名称都没有, 也提交了请求
+      */
+
+      // 发添加或更新的请求
+      const result= await this.$API.attr.save(attr)  // attr中有id是更新, 没有id是保存
+      
+      // 如果成功了
+      if (result.code===200) {
+        // 提示成功
+        this.$message.success('保存属性成功')
+        // 显示列表界面
+        this.isShowList = true
+        // 重新获取属性列表显示
+        this.getAttrs()
+      } else {
+        // 如果失败了, 提示请求失败
+        this.$message.error('保存属性失败')
+      }
+    },
 
     /* 
     将指定属性名称从编辑模式变为查看
