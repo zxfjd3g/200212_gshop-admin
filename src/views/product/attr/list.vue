@@ -145,6 +145,21 @@ export default {
       提交的数据中包含没必要的edit属性
       如果一个属性值名称都没有, 也提交了请求
       */
+     // 对属性值列表进行过滤: 过滤掉属性值名称为''
+      attr.attrValueList = attr.attrValueList.filter(attrValue => {
+        if (attrValue.valueName) {
+          // 删除attrValue对象中的edit属性
+          delete attrValue.edit
+          return true
+        }
+        return false
+      })
+
+      // 如果attr.attrValueList是空数组, 没有必要发请求, 直接提示
+      if (attr.attrValueList.length===0) {
+        this.$message.warning('至少指定一个属性值名称')
+        return
+      }
 
       // 发添加或更新的请求
       const result= await this.$API.attr.save(attr)  // attr中有id是更新, 没有id是保存
