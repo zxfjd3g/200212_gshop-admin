@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'AttrList',
 
@@ -191,7 +192,13 @@ export default {
     */
     showUpdate (attr) {
       // 保存attr
-      this.attr = attr
+      // this.attr = attr  // 有问题: 列表界面中的attrs与修改界面中的attr指向的是同一个平台属性对象
+      // this.attr = {...attr} // 对列表中的attr进行浅拷贝后, 指定为修改界面的attr ==> 属性名修改可以取消了
+      //  列表项的attr的attrValueList与修改界面的attr的attrValueList是同一个数组
+      // attr.attrValueList===this.attr.attrValueList
+      // console.log('---', attr.attrValueList===this.attr.attrValueList) // true
+      this.attr =  cloneDeep(attr)  // 对列表项的attr进行深克隆并指定给修改界面的attr
+
       // 显示更新界面
       this.isShowList = false
     },
