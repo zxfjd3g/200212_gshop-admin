@@ -35,3 +35,9 @@
 				子组件: 
 					props: {visible: Boolean}
 					this.$emit('update:visible', false)
+
+## 编码任务列表
+	1--实现: 定义SPU与SKU相关接口请求函数
+  2--实现: SPU列表界面的布局和动态显示
+  3--实现: SpuForm界面的布局
+  4--实现: SpuForm显示隐藏的控制--使用.sync
