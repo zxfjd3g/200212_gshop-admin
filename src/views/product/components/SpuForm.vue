@@ -84,7 +84,7 @@
     </el-form-item>
 
     <el-form-item>
-      <el-button type="primary">保存</el-button>
+      <el-button type="primary" @click="save">保存</el-button>
       <el-button @click="back">取消</el-button>
     </el-form-item>
 
@@ -159,6 +159,132 @@ export default {
   },
 
   methods: {
+    /* 
+    重置数据
+    */
+    resetData () {
+      this.dialogImageUrl = '' // 大图的url
+      this.dialogVisible = false // 标识大图dilaog是否显示
+
+      this.spuId = '' // SPU ID
+      this.spuInfo =  { // SPU详情信息对象
+        category3Id: null, // 3级分类ID
+        spuName: '', // spu名称
+        description: '', // spu描述
+        tmId: null, // spu的品牌id
+        spuSaleAttrList: [], // spu的销售属性列表
+        spuImageList: [], // spu图片列表
+      } 
+      this.spuImageList = [] // SPU图片列表
+      this.trademarkList = [] // 品牌列表
+      this.saleAttrList = [] // 销售属性列表
+      this.attrIdAttrName = '' // 用来收集销售属性id与name   id:name
+    },
+
+    /* 
+    {
+      "category3Id": 61,
+      "spuName": "aa",
+      "description": "aa描述",
+      "tmId": 2,
+      "spuSaleAttrList": [
+        {
+          "baseSaleAttrId": "1",
+          "saleAttrName": "选择颜色",
+          "spuSaleAttrValueList": [
+            {
+              "saleAttrValueName": "a",
+              "baseSaleAttrId": "1"
+            }
+          ]
+        }
+      ],
+      "spuImageList": [{
+        "imgName": "下载 (1).jpg",
+        "imgUrl": "http://47.93.148.192:8080/xxx.jpg"
+      }]
+    }
+    */
+    /* 
+    发请求保存数据
+    */
+    async save () {
+      // 取出数据
+      const {spuInfo, spuImageList} = this
+
+      /* 在发请求前, 需要对参数数据做必要整理操作 */
+      // 整理1: spuImageList
+      /* 
+      从后台获取的图片文件对象的结构
+			{
+			    "id": 333,
+			    "spuId": 26,
+			    "imgName": "rBHu8l6UcKyAfzDsAAAPN5YrVxw870.jpg",
+			    "imgUrl": "http://47.93.148.192:8080/xxx.jpg",
+				 "name": "rBHu8l6UcKyAfzDsAAAPN5YrVxw870.jpg",
+				 "url":  "http://47.93.148.192:8080/xxx.jpg"
+			}
+		新上传的图片文件对象的结构
+			{
+				name: "e814ec6fd86c5a8c.jpg"
+				response: {
+					data: "http://182.92.128.115:8080/group1/xxx.jpg"
+				}
+				url: "blob:http://localhost:9529/a5199d82-0811-442d-9ec2-dafae83d9ed9"
+			}
+		提交保存/更新SPU请求的图片对象的结构(目标):
+			 {
+			    "imgName": "下载 (1).jpg",
+			    "imgUrl": "http://47.93.148.192:8080/xxx.jpg"
+			 }
+      */
+      spuInfo.spuImageList = spuImageList.map(item => ({
+        imgName: item.name,
+        imgUrl: item.response ? item.response.data : item.imgUrl
+      }))
+
+      // 整理2: spuSaleAttrList
+      /* 
+      1. 过滤掉没有属性值的属性对象
+      2. 删除一些不必要的属性数据(为了界面显示而添加: saleAttrValueName/edit)
+      */
+      spuInfo.spuSaleAttrList = spuInfo.spuSaleAttrList.filter(attr => {
+        delete attr.edit
+        delete attr.saleAttrValueName
+        
+        return attr.spuSaleAttrValueList.length>0
+      })
+
+      // 发送ajax请求
+      const result = await this.$API.spu.addUpdate(spuInfo)
+
+      // 如果成功了
+      if (result.code===200) {
+        this.$message.success('保存SPU成功')
+        // 显示列表界面
+        this.$emit('update:visible', false)
+        // 通知父组件保存成功了
+        this.$emit('success')
+        // 重置数据
+        this.resetData()
+      } else { // 如果失败了
+        this.$message.error('保存SPU失败')
+      }
+    },
+
+    /* 
+    返回
+    */
+    back () {
+      // this.$parent.$parent.isShowSpuForm = false
+      // 分发.sync内部绑定的update:visible的自定义事件
+      this.$emit('update:visible', false)
+      // 通知父组件取消了
+      this.$emit('cancel')
+      // 重置数据
+      this.resetData()
+    },
+
     /* 
     添加一个新的Spu销售属性值对象
     向当前属性对象的spuSaleAttrValueList中添加一个属性值对象
@@ -321,14 +447,7 @@ export default {
       this.saleAttrList = saleAttrList
     },
 
-    /* 
-    返回
-    */
-    back () {
-      // this.$parent.$parent.isShowSpuForm = false
-      // 分发.sync内部绑定的update:visible的自定义事件
-      this.$emit('update:visible', false)
-    },
+    
 
     /* 
     上传图片成功后的回调

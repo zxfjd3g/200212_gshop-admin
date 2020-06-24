@@ -32,7 +32,8 @@
           @current-change="getSpuList"
           @size-change="handleSizeChange" />
       </div>
-      <SpuForm :visible.sync="isShowSpuForm" ref="spuForm"></SpuForm>
+      <SpuForm :visible.sync="isShowSpuForm" ref="spuForm" 
+        @success="handleSuccess" @cancel="handleCancel"></SpuForm>
       <!-- <SpuForm :visible="isShowSpuForm" @update:visible="isShowSpuForm=$event"></SpuForm> -->
     </el-card>
   </div>
@@ -68,9 +69,32 @@ export default {
   methods: {
 
     /* 
+    保存(添加/更新)成功的事件回调
+    */
+    handleSuccess () {
+      // 重新获取SPU列表
+      // 如果是更新获取当前页, 如果是添加获取第一页
+      this.getSpuList(this.spuId ? this.page : 1)
+
+      // 重置spuId
+      this.spuId = null
+    },
+
+    /* 
+    取消保存的事件回调
+    */
+    handleCancel () {
+      // 重置spuId
+      this.spuId = null
+    },
+
+    /* 
     显示spu详情信息的修改界面
     */
     showSpuUpdate (spu) { // spu是spuList中一个包含spu基本信息的对象  / spuInfo包含了更多的信息
+      // 当显示更新界面前, 保存spuId
+      this.spuId = spu.id  // 这个spuId不是响应式
+
       // 显示SpuForm界面
       this.isShowSpuForm = true
       // 通知/让spuForm组件对象(更新)初始请求加载需要显示的数据

@@ -39,6 +39,7 @@ export default {
     // return request.post(`/admin/product/${spuInfo.id ? 'update' : 'save'}SpuInfo`, spuInfo)
     return request({
       url: `/admin/product/${spuInfo.id ? 'update' : 'save'}SpuInfo`,
+      method: 'POST',
       data: spuInfo
     })
   },
