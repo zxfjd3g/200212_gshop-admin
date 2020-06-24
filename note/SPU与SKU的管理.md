@@ -24,7 +24,7 @@
 	界面布局: Card / CategorySelector / Button / Table / HintButton / Pagination 
 	异步获取分页列表数据显示
 
-## SpuForm组件
+## SpuForm组件布局界面
 	界面布局: Form / Input / Select / Upload / Table / Button / Tag
 	控制SpuForm的显示隐藏
 		在父组件中定义标识数据: isShowSpuForm=true/false
@@ -36,8 +36,25 @@
 					props: {visible: Boolean}
 					this.$emit('update:visible', false)
 
+## SpuForm组件: 动态获取数据
+    修改SPU
+		1). 根据spuId请求获取spuInfo  spu.get(spuId)
+		2). 根据spuId请求获取spuImageList  sku.getSpuImageList (spuId)
+		3). 获取所有品牌的列表trademarkList trademark.getList()
+		4). 获取所有销售属性的列表saleAttrList spu.getSaleAttrList()
+    添加SPU
+    	1). 获取所有品牌的列表trademarkList trademark.getList()
+		2). 获取所有销售属性的列表saleAttrList spu.getSaleAttrList()
+	在父组件中通知子组件请求获取数据
+		使用ref技术
+
+## SpuForm组件: 显示动态数据
+
+
+
 ## 编码任务列表
 	1--实现: 定义SPU与SKU相关接口请求函数
-  2--实现: SPU列表界面的布局和动态显示
-  3--实现: SpuForm界面的布局
-  4--实现: SpuForm显示隐藏的控制--使用.sync
+	2--实现: SPU列表界面的布局和动态显示
+	3--实现: SpuForm界面的布局
+	4--实现: SpuForm显示隐藏的控制--使用.sync
+	5--实现: 初始动态获取SpuForm添加/更新界面需要的数据

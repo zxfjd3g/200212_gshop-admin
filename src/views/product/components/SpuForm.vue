@@ -64,11 +64,106 @@ export default {
   data () {
     return {
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+
+      spuId: '', // SPU ID
+      spuInfo: { // SPU详情信息对象
+        category3Id: null, // 3级分类ID
+        spuName: '', // spu名称
+        description: '', // spu描述
+        tmId: null, // spu的品牌id
+        spuSaleAttrList: [], // spu的销售属性列表
+        spuImageList: [], // spu图片列表
+      }, 
+      spuImageList: [], // SPU图片列表
+      trademarkList: [], // 品牌列表
+      saleAttrList: [], // 销售属性列表
     }
   },
 
   methods: {
+
+    /* 
+    请求加载更新界面初始显示需要的数据
+      1). 根据spuId请求获取spuInfo  spu.get(spuId)
+      2). 根据spuId请求获取spuImageList  sku.getSpuImageList (spuId)
+      3). 获取所有品牌的列表trademarkList trademark.getList()
+      4). 获取所有销售属性的列表saleAttrList spu.getSaleAttrList()
+    */
+    initLoadUpdateData (spuId) {
+      // 保存spuId
+      this.spuId = spuId
+      // 发4个请求获取数据
+      this.getSpuInfo()
+      this.getSpuImageList()
+      this.getTrademarkList()
+      this.getSaleAttrList()
+    },
+
+    /* 
+    请求加载添加界面初始显示需要的数据
+      1). 获取所有品牌的列表trademarkList trademark.getList()
+      2). 获取所有销售属性的列表saleAttrList spu.getSaleAttrList()
+    */
+    initLoadAddData (category3Id) {
+      // 保存category3Id到spuInfo
+      this.spuInfo.category3Id = category3Id
+      // 发2个请求获取数据
+      this.getTrademarkList()
+      this.getSaleAttrList()
+    },
+
+    // 1). 根据spuId请求获取spuInfo  spu.get(spuId)
+		// 2). 根据spuId请求获取spuImageList  sku.getSpuImageList (spuId)
+		// 3). 获取所有品牌的列表trademarkList trademark.getList()
+    // 4). 获取所有销售属性的列表saleAttrList spu.getSaleAttrList()
+    /* 
+    根据spuId请求获取spuInfo
+    */
+    async getSpuInfo () {
+      // 发ajax请求获取数据
+      const result = await this.$API.spu.get(this.spuId)
+      // 取出data数据
+      const spuInfo = result.data
+      // 更新目标
+      this.spuInfo = spuInfo
+    },
+
+    /* 
+    根据spuId请求获取spuImageList  sku.getSpuImageList (spuId)
+    */
+    async getSpuImageList () { 
+      // 发ajax请求获取数据
+      const result = await this.$API.sku.getSpuImageList(this.spuId)
+      // 取出data数据
+      const spuImageList = result.data
+      // 更新目标
+      this.spuImageList = spuImageList
+    },
+
+    /* 
+    获取所有品牌的列表trademarkList trademark.getList()
+    */
+    async getTrademarkList () {
+      // 发ajax请求获取数据
+      const result = await this.$API.trademark.getList()
+      // 取出data数据
+      const trademarkList = result.data
+      // 更新目标
+      this.trademarkList = trademarkList
+    },
+
+    /* 
+    获取所有销售属性的列表saleAttrList spu.getSaleAttrList()
+    */
+    async getSaleAttrList () {
+      // 发ajax请求获取数据
+      const result = await this.$API.spu.getSaleAttrList()
+      // 取出data数据
+      const saleAttrList = result.data
+      // 更新目标
+      this.saleAttrList = saleAttrList
+    },
 
     /* 
     返回

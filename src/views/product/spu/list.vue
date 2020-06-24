@@ -5,7 +5,7 @@
     </el-card>
     <el-card>
       <div v-show="!isShowSpuForm">
-        <el-button type="primary" icon="el-icon-plus" @click="isShowSpuForm=true">添加SPU</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="showSpuAdd">添加SPU</el-button>
 
         <el-table border :data="spuList">
           <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
@@ -14,7 +14,8 @@
           <el-table-column label="操作">
             <template slot-scope="{row, $index}">
               <hint-button title="添加SKU" type="primary" icon="el-icon-plus" size="mini" />
-              <hint-button title="修改SPU" type="primary" icon="el-icon-edit" size="mini" />
+              <hint-button title="修改SPU" type="primary" icon="el-icon-edit" size="mini" 
+                @click="showSpuUpdate(row)"/>
               <hint-button title="查看所有SKU" type="info" icon="el-icon-info" size="mini" />
               <hint-button title="删除SPU" type="danger" icon="el-icon-delete" size="mini" />
             </template>
@@ -31,7 +32,7 @@
           @current-change="getSpuList"
           @size-change="handleSizeChange" />
       </div>
-      <SpuForm :visible.sync="isShowSpuForm"></SpuForm>
+      <SpuForm :visible.sync="isShowSpuForm" ref="spuForm"></SpuForm>
       <!-- <SpuForm :visible="isShowSpuForm" @update:visible="isShowSpuForm=$event"></SpuForm> -->
     </el-card>
   </div>
@@ -58,13 +59,34 @@ export default {
   async mounted () {
     // const result = await this.$API.spu.getList(1, 3, 61)
     // console.log('result---', result)
-    // this.category1Id = 2
-    // this.category2Id = 13
-    // this.category3Id = 61
-    // this.getSpuList(1)
+    this.category1Id = 2
+    this.category2Id = 13
+    this.category3Id = 61
+    this.getSpuList(1)
   },
 
   methods: {
+
+    /* 
+    显示spu详情信息的修改界面
+    */
+    showSpuUpdate (spu) { // spu是spuList中一个包含spu基本信息的对象  / spuInfo包含了更多的信息
+      // 显示SpuForm界面
+      this.isShowSpuForm = true
+      // 通知/让spuForm组件对象(更新)初始请求加载需要显示的数据
+      this.$refs.spuForm.initLoadUpdateData(spu.id)
+    },
+
+    /* 
+    显示spu详情信息的添加界面
+    */
+    showSpuAdd () { 
+      // 显示SpuForm界面
+      this.isShowSpuForm = true
+      // 通知/让spuForm组件对象(添加)初始请求加载需要显示的数据
+      this.$refs.spuForm.initLoadAddData(this.category3Id)
+    },
+
     /* 
     处理分类发生改变的回调
     */
