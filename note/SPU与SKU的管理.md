@@ -122,6 +122,28 @@
 
 ## SpuForm: 交互收集数据
 	spu图片列表收集
+		从后台获取的图片文件对象的结构
+			{
+			    "id": 333,
+			    "spuId": 26,
+			    "imgName": "rBHu8l6UcKyAfzDsAAAPN5YrVxw870.jpg",
+			    "imgUrl": "http://47.93.148.192:8080/xxx.jpg",
+				 "name": "rBHu8l6UcKyAfzDsAAAPN5YrVxw870.jpg",
+				 "url":  "http://47.93.148.192:8080/xxx.jpg"
+			}
+		新上传的图片文件对象的结构
+			{
+				name: "e814ec6fd86c5a8c.jpg"
+				response: {
+					data: "http://182.92.128.115:8080/group1/xxx.jpg"
+				}
+				url: "blob:http://localhost:9529/a5199d82-0811-442d-9ec2-dafae83d9ed9"
+			}
+		提交保存/更新SPU请求的图片对象的结构(目标):
+			 {
+			    "imgName": "下载 (1).jpg",
+			    "imgUrl": "http://47.93.148.192:8080/xxx.jpg"
+			 }
 
 	spu销售属性数据收集
 		收集选择销售属性: v-model="attrIdAttrName"  / :value="attr.id+':'+attr.name" 
@@ -130,27 +152,28 @@
 
 		添加SPU销售属性
 			向spuInfo.spuSaleAttrList数组中添加一个对象
-			{
-		      "baseSaleAttrId": "1",
-		      "saleAttrName": "选择颜色",
-		      "spuSaleAttrValueList": []
-		    }
+				{
+			      "baseSaleAttrId": "1",
+			      "saleAttrName": "选择颜色",
+			      "spuSaleAttrValueList": []
+			    }
+			清除选择收集的数据: attrIdAttrName = ''
 
 		添加SPU销售属性值
 			是否显示输入框的标识: 是spu销售属性对象上的edit
 			输入框输入的属性值名称:是spu销售属性对象上的saleAttrValueName
-			向当前属性对象的spuSaleAttrValueList中添加一个属性值对象
-			 {
-	          saleAttrValueName: '',
-	          baseSaleAttrId: "1"
-	         }
-
+			从查看模式变为编辑模式:
+				给当前行的属性对象添加edit属性为true: $set()
+				输入框自动获得焦点: $nextTick() + $refs + focus()
+			从编辑模式变为查看模式(确定添加属性值对象)
+				向当前属性对象的spuSaleAttrValueList中添加一个属性值对象
+				 {
+		          saleAttrValueName: '',
+		          baseSaleAttrId: "1"
+		         }
 		删除SPU销售属性
-
 		删除SPU销售属性值
 
-		
-	
 	
 
 ## 编码任务列表
@@ -161,3 +184,7 @@
 	5--实现: 初始动态获取SpuForm添加/更新界面需要的数据
 	6--实现: 动态显示品牌列表与SPU图片列表
 	7--实现: 动态显示销售属性列表与未使用的属性列表
+	8--实现: 添加spu销售属性
+	9--实现: 添加spu销售属性值
+	10--实现: 删除spu销售属性与spu销售属性值
+	11--实现: spu图片的上传与删除

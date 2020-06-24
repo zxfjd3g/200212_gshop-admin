@@ -52,9 +52,10 @@
           <template slot-scope="{row, $index}">
             <el-tag
               :key="attrValue.id"
-              v-for="attrValue in row.spuSaleAttrValueList"
+              v-for="(attrValue, index) in row.spuSaleAttrValueList"
               closable
               :disable-transitions="false"
+              @close="row.spuSaleAttrValueList.splice(index, 1)"
               >
               {{attrValue.saleAttrValueName}}
             </el-tag>
@@ -62,7 +63,7 @@
               class="input-new-tag"
               v-if="row.edit"
               :ref="$index"
-              v-model="row.saleAttrValueName"
+              v-model.trim="row.saleAttrValueName"
               size="small"
               placeholder="名称"
               @keyup.enter.native="addSpuSaleAttrValue(row, $index)"
@@ -74,7 +75,10 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="150">
-          <hint-button title="删除" type="danger" icon="el-icon-delete" size="mini" />
+          <template slot-scope="{$index}">
+            <hint-button title="删除" type="danger" icon="el-icon-delete" size="mini" 
+              @click="spuInfo.spuSaleAttrList.splice($index, 1)"/>
+          </template>
         </el-table-column>
       </el-table>
     </el-form-item>
@@ -166,6 +170,21 @@ export default {
     addSpuSaleAttrValue (spuSaleAttr, index) {
       // 取出相关数据
       const {saleAttrValueName, baseSaleAttrId} = spuSaleAttr
+
+      // 检查1: 必须有输入, 否则自动变为查看模式
+      if (!saleAttrValueName) { // 可能为''或者undefined
+        spuSaleAttr.edit = false
+        return
+      }
+      // 检查2: 不能与已有重复
+      const isRepeat = spuSaleAttr.spuSaleAttrValueList.some(value => value.saleAttrValueName==saleAttrValueName)
+      if (isRepeat) {
+        // 提示重复
+        this.$message.warning('不能重复')
+        // 让当前input自动获得焦点
+        this.$nextTick(() => this.$refs[index].focus())
+        return
+      }
       
       // 添加一个新的spu销售属性值对象
       spuSaleAttr.spuSaleAttrValueList.push({
