@@ -42,8 +42,11 @@
             on-success: 用来指定上传成功时的回调函数
             before-upload: 在准备发上传请求前调用, 如果返回false不发请求, 用来检查文件类型和大小
           -->
-          <el-upload class="avatar-uploader" action="/dev-api/admin/product/fileUpload" :show-file-list="false"
-            :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+          <el-upload class="avatar-uploader" 
+            action="/dev-api/admin/product/fileUpload" 
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess" 
+            :before-upload="beforeAvatarUpload">
             <img v-if="form.logoUrl" :src="form.logoUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过50kb</div>

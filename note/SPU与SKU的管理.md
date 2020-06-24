@@ -119,6 +119,40 @@
 				判断的依据是: name与saleAttrName就否相同
 				定义计算属性: unUsedSaleAttrList
 		
+
+## SpuForm: 交互收集数据
+	spu图片列表收集
+
+	spu销售属性数据收集
+		收集选择销售属性: v-model="attrIdAttrName"  / :value="attr.id+':'+attr.name" 
+			销售属性的id
+			销售属性的name
+
+		添加SPU销售属性
+			向spuInfo.spuSaleAttrList数组中添加一个对象
+			{
+		      "baseSaleAttrId": "1",
+		      "saleAttrName": "选择颜色",
+		      "spuSaleAttrValueList": []
+		    }
+
+		添加SPU销售属性值
+			是否显示输入框的标识: 是spu销售属性对象上的edit
+			输入框输入的属性值名称:是spu销售属性对象上的saleAttrValueName
+			向当前属性对象的spuSaleAttrValueList中添加一个属性值对象
+			 {
+	          saleAttrValueName: '',
+	          baseSaleAttrId: "1"
+	         }
+
+		删除SPU销售属性
+
+		删除SPU销售属性值
+
+		
+	
+	
+
 ## 编码任务列表
 	1--实现: 定义SPU与SKU相关接口请求函数
 	2--实现: SPU列表界面的布局和动态显示

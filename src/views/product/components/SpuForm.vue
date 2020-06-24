@@ -17,26 +17,33 @@
     <el-form-item label="SPU图片">
       <!-- 
         file-list: 指定显示的图片列表数组 [{name: 'food.jpg', url: 'https://xxx.cdn.com/xxx.jpg'}]
+        action: 指定上传图片的路径
+        list-type: 指定图片列表的风格样式
+        on-preview: 指定点击预览大图的回调函数
+        on-remove: 点击删除的回调函数
       -->
       <el-upload
         :file-list="spuImageList"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action="/dev-api/admin/product/fileUpload"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
-        :on-remove="handleRemove">
+        :on-remove="handleRemove"
+        :on-success="handleUploadSuccess">
         <i class="el-icon-plus"></i>
       </el-upload>
+      <!-- 显示大图的dialog -->
       <el-dialog :visible.sync="dialogVisible">
         <img width="100%" :src="dialogImageUrl" alt="">
       </el-dialog>
     </el-form-item>
     <el-form-item label="销售属性">
-      <el-select value="" 
+      <el-select v-model="attrIdAttrName"
         :placeholder="unUsedSaleAttrList.length===0 ? '没有啦!' : `还有${unUsedSaleAttrList.length}未选择`">
-        <el-option :label="attr.name" :value="attr.id" v-for="attr in unUsedSaleAttrList" :key="attr.id"></el-option>
+        <el-option :label="attr.name" :value="attr.id+':'+attr.name" v-for="attr in unUsedSaleAttrList" :key="attr.id"></el-option>
       </el-select>
 
-      <el-button type="primary" icon="el-icon-plus">添加销售属性</el-button>
+      <el-button type="primary" icon="el-icon-plus" :disabled="!attrIdAttrName" 
+        @click="addSpuSaleAttr">添加销售属性</el-button>
 
       <el-table border style="margin-top: 20px" :data="spuInfo.spuSaleAttrList">
         <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
@@ -48,19 +55,22 @@
               v-for="attrValue in row.spuSaleAttrValueList"
               closable
               :disable-transitions="false"
-              ><!-- @close="handleClose(tag)" -->
+              >
               {{attrValue.saleAttrValueName}}
             </el-tag>
             <el-input
               class="input-new-tag"
               v-if="row.edit"
+              :ref="$index"
+              v-model="row.saleAttrValueName"
               size="small"
+              placeholder="名称"
+              @keyup.enter.native="addSpuSaleAttrValue(row, $index)"
+              @blur="addSpuSaleAttrValue(row, $index)"
             >
-            <!-- @keyup.enter.native="handleInputConfirm"
-              @blur="handleInputConfirm" -->
             </el-input>
-            <el-button v-else class="button-new-tag" size="small">+ 添加</el-button>
-            <!-- @click="showInput" -->
+            <el-button v-else class="button-new-tag" size="small" 
+              @click="showInput(row, $index)">+ 添加</el-button>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="150">
@@ -87,8 +97,8 @@ export default {
 
   data () {
     return {
-      dialogImageUrl: '',
-      dialogVisible: false,
+      dialogImageUrl: '', // 大图的url
+      dialogVisible: false, // 标识大图dilaog是否显示
 
       spuId: '', // SPU ID
       spuInfo: { // SPU详情信息对象
@@ -102,6 +112,7 @@ export default {
       spuImageList: [], // SPU图片列表
       trademarkList: [], // 品牌列表
       saleAttrList: [], // 销售属性列表
+      attrIdAttrName: '', // 用来收集销售属性id与name   id:name
     }
   },
 
@@ -144,6 +155,63 @@ export default {
   },
 
   methods: {
+    /* 
+    添加一个新的Spu销售属性值对象
+    向当前属性对象的spuSaleAttrValueList中添加一个属性值对象
+			 {
+        saleAttrValueName: '',
+        baseSaleAttrId: "1"
+      }
+    */
+    addSpuSaleAttrValue (spuSaleAttr, index) {
+      // 取出相关数据
+      const {saleAttrValueName, baseSaleAttrId} = spuSaleAttr
+      
+      // 添加一个新的spu销售属性值对象
+      spuSaleAttr.spuSaleAttrValueList.push({
+        saleAttrValueName,
+	      baseSaleAttrId
+      })
+
+      // 变为查看模式
+      spuSaleAttr.edit = false
+      // 清除输入数据
+      spuSaleAttr.saleAttrValueName = ''
+    },
+
+    /* 
+    显示当前行的输入框
+    */
+    showInput (spuSaleAttr, index) {
+      // 指定edit为true ==> 显示输入框
+      if (spuSaleAttr.hasOwnProperty('edit')) {
+        spuSaleAttr.edit = true
+      } else {
+        this.$set(spuSaleAttr, 'edit', true)
+      }
+
+      // 让index对应的input自动获得焦点
+      this.$nextTick(() => this.$refs[index].focus())
+    },
+
+    /* 
+    添加一个新的SPU销售属性对象
+    */
+    addSpuSaleAttr () {
+      // 取出销售属性的id和name
+      const [baseSaleAttrId, saleAttrName] = this.attrIdAttrName.split(':')   // id:name ==> [id值, name值]
+      // 创建一个spu销售属性对象
+      const spuSaleAttr = {
+        baseSaleAttrId,
+        saleAttrName,
+        spuSaleAttrValueList: [], // 用于保存销售属性值对象的数组
+      }
+      // 添加到spuInfo.spuSaleAttrList中
+      this.spuInfo.spuSaleAttrList.push(spuSaleAttr)
+
+      // 删除收集的attrIdAttrName
+      this.attrIdAttrName = ''
+    },
 
     /* 
     请求加载更新界面初始显示需要的数据
@@ -243,12 +311,35 @@ export default {
       this.$emit('update:visible', false)
     },
 
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    /* 
+    上传图片成功后的回调
+    response: 请求响应对象
+    file: 当前上传成功的图片对象
+    fileList: 所有已上传的图片对象的数组
+    */
+    handleUploadSuccess (response, file, fileList) {
+      console.log('handleUploadSuccess', response, file, fileList)
+      this.spuImageList = fileList
     },
+
+    /* 
+    点击删除图片的回调函数
+    file: 被删除的图片对象
+    fileList: 剩下的图片对象的数组
+    */
+    handleRemove(file, fileList) {
+      console.log('handleRemove()', file, fileList)
+      this.spuImageList = fileList
+    },
+    /* 
+    显示指定的大图片
+    file: 包含图片信息的对象
+    */
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+      // 指定要显示的大图url
+      this.dialogImageUrl = file.url
+      // 显示大图dilaog
+      this.dialogVisible = true
     }
   }
 }
