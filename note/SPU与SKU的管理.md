@@ -49,9 +49,12 @@
 		使用ref技术得到子组件对象, 并调用父组件对象方法
 
 ## SpuForm组件: 显示动态数据
+	注意: 请求获取的数据可能不能直接用于显示, 需要先进行一定整理来再显示
+
 	品牌下拉列表
 		trademarkList: 所有品牌的数组
 		spuInfo.tmId: 当前SPU的品牌id
+
 	SPU图片列表: spuImageList
 		请求返回的数据结构
 			{
@@ -65,9 +68,13 @@
 				name: 'food.jpg', 
 				url: 'https://xxx.cdn.com/xxx.jpg'
 			}
+		如何处理/整理:
+			给spuImageList中每个图片对象都添加name和url属性, 属性值为对应的属性值
+		
 ## 编码任务列表
 	1--实现: 定义SPU与SKU相关接口请求函数
 	2--实现: SPU列表界面的布局和动态显示
 	3--实现: SpuForm界面的布局
 	4--实现: SpuForm显示隐藏的控制--使用.sync
 	5--实现: 初始动态获取SpuForm添加/更新界面需要的数据
+	6--实现: 动态显示品牌列表与SPU图片列表
