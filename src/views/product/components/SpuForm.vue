@@ -30,19 +30,40 @@
         <img width="100%" :src="dialogImageUrl" alt="">
       </el-dialog>
     </el-form-item>
-    <el-form-item label="SPU图片">
-      <el-select value="" placeholder="xxx">
-        <el-option label="A" value="1"></el-option>
-        <el-option label="B" value="2"></el-option>
+    <el-form-item label="销售属性">
+      <el-select value="" 
+        :placeholder="unUsedSaleAttrList.length===0 ? '没有啦!' : `还有${unUsedSaleAttrList.length}未选择`">
+        <el-option :label="attr.name" :value="attr.id" v-for="attr in unUsedSaleAttrList" :key="attr.id"></el-option>
       </el-select>
 
       <el-button type="primary" icon="el-icon-plus">添加销售属性</el-button>
 
-      <el-table border style="margin-top: 20px">
+      <el-table border style="margin-top: 20px" :data="spuInfo.spuSaleAttrList">
         <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
-        <el-table-column label="属性名"></el-table-column>
-        <el-table-column label="属性值名称列表"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="属性名" prop="saleAttrName" width="150"></el-table-column>
+        <el-table-column label="属性值名称列表">
+          <template slot-scope="{row, $index}">
+            <el-tag
+              :key="attrValue.id"
+              v-for="attrValue in row.spuSaleAttrValueList"
+              closable
+              :disable-transitions="false"
+              ><!-- @close="handleClose(tag)" -->
+              {{attrValue.saleAttrValueName}}
+            </el-tag>
+            <el-input
+              class="input-new-tag"
+              v-if="row.edit"
+              size="small"
+            >
+            <!-- @keyup.enter.native="handleInputConfirm"
+              @blur="handleInputConfirm" -->
+            </el-input>
+            <el-button v-else class="button-new-tag" size="small">+ 添加</el-button>
+            <!-- @click="showInput" -->
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="150">
           <hint-button title="删除" type="danger" icon="el-icon-delete" size="mini" />
         </el-table-column>
       </el-table>
@@ -81,6 +102,44 @@ export default {
       spuImageList: [], // SPU图片列表
       trademarkList: [], // 品牌列表
       saleAttrList: [], // 销售属性列表
+    }
+  },
+
+  computed: {
+    /* 
+    未使用的销售属性的数组
+    */
+    unUsedSaleAttrList () {
+      // 1. 取出依赖数据
+      // 所有销售属性列表 saleAttrList
+      const {saleAttrList} = this
+      // spu中已有销售属性列表 spuInfo.spuSaleAttrList
+      const {spuSaleAttrList} = this.spuInfo
+
+      // 2. 计算产生一个新数组
+      // 对saleAttrList进行过滤, 去掉已经在spuInfo.spuSaleAttrList存在的
+      // 判断的依据是: name与saleAttrName就否相同
+      const arr = saleAttrList.filter(attr => {
+        /* 
+        {
+          "name": "选择套装"
+        }
+
+        {
+					"saleAttrName": "选择版本",
+				}
+        */
+        // attr.name===spuSaleAttrList中任意一个元素对象的saleAttrName属性值
+        // const spuAttr = spuSaleAttrList.find(spuAttr => spuAttr.saleAttrName===attr.name)
+        // spuAttr 如果有就说明已存在了, attr就需要过滤掉(返回false)
+        // return !spuAttr
+        // 是否已在存在对应的销售属性
+        const isExsit = spuSaleAttrList.some(spuAttr => spuAttr.saleAttrName===attr.name)
+        return !isExsit
+      })
+
+      // 3. 返回它
+      return arr
     }
   },
 
@@ -195,3 +254,20 @@ export default {
 }
 </script>
 
+<style>
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
+</style>

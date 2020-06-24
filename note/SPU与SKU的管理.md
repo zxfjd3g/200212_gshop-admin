@@ -70,6 +70,54 @@
 			}
 		如何处理/整理:
 			给spuImageList中每个图片对象都添加name和url属性, 属性值为对应的属性值
+
+	销售属性:
+		SPU销售属性列表
+			目标数组: spuInfo.spuSaleAttrList
+			数据结构: 
+				{
+				  "id": 133,
+				  "spuId": 26,
+				  "baseSaleAttrId": 2,
+				  "saleAttrName": "选择版本",
+				  "spuSaleAttrValueList": [
+				    {
+				      "id": 225,
+				      "spuId": 26,
+				      "baseSaleAttrId": 2,
+				      "saleAttrValueName": "aa",
+				      "saleAttrName": "选择版本",
+				      "isChecked": null
+				    }
+				  ]
+					// 添加属性
+					edit: true/false
+				}
+
+		还未使用的销售属性列表
+			相关数据1: 所有销售属性列表 saleAttrList
+				[
+				  {
+				    "id": 1,
+				    "name": "选择颜色"
+				  },
+				  {
+				    "id": 2,
+				    "name": "选择版本"
+				  },
+				  {
+				    "id": 3,
+				    "name": "选择套装"
+				  }
+				]
+			相关数据2: spu中已有销售属性列表 spuInfo.spuSaleAttrList
+				{
+					"saleAttrName": "选择版本",
+				}
+			未使用的销售属性的数组:
+				对saleAttrList进行过滤, 去掉已经在spuInfo.spuSaleAttrList存在的
+				判断的依据是: name与saleAttrName就否相同
+				定义计算属性: unUsedSaleAttrList
 		
 ## 编码任务列表
 	1--实现: 定义SPU与SKU相关接口请求函数
@@ -78,3 +126,4 @@
 	4--实现: SpuForm显示隐藏的控制--使用.sync
 	5--实现: 初始动态获取SpuForm添加/更新界面需要的数据
 	6--实现: 动态显示品牌列表与SPU图片列表
+	7--实现: 动态显示销售属性列表与未使用的属性列表
