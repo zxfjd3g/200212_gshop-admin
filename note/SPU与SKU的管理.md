@@ -46,12 +46,25 @@
     	1). 获取所有品牌的列表trademarkList trademark.getList()
 		2). 获取所有销售属性的列表saleAttrList spu.getSaleAttrList()
 	在父组件中通知子组件请求获取数据
-		使用ref技术
+		使用ref技术得到子组件对象, 并调用父组件对象方法
 
 ## SpuForm组件: 显示动态数据
-
-
-
+	品牌下拉列表
+		trademarkList: 所有品牌的数组
+		spuInfo.tmId: 当前SPU的品牌id
+	SPU图片列表: spuImageList
+		请求返回的数据结构
+			{
+			    "id": 333,
+			    "spuId": 26,
+			    "imgName": "rBHu8l6UcKyAfzDsAAAPN5YrVxw870.jpg",
+			    "imgUrl": "http://47.93.148.192:8080/xxx.jpg"
+			 }
+		upload组件需要的数据结构:
+			{
+				name: 'food.jpg', 
+				url: 'https://xxx.cdn.com/xxx.jpg'
+			}
 ## 编码任务列表
 	1--实现: 定义SPU与SKU相关接口请求函数
 	2--实现: SPU列表界面的布局和动态显示

@@ -1,22 +1,25 @@
 <template>
   <el-form label-width="100px" v-show="visible">
     <el-form-item label="SPU名称">
-      <el-input placeholder="SPU名称"></el-input>
+      <el-input placeholder="SPU名称" v-model="spuInfo.spuName"></el-input>
     </el-form-item>
 
     <el-form-item label="品牌">
-      <el-select value="" placeholder="请选择品牌"> 
-        <el-option label="A" value="1"></el-option>
-        <el-option label="B" value="2"></el-option>
+      <el-select v-model="spuInfo.tmId" placeholder="请选择品牌"> 
+        <el-option :label="tm.tmName" :value="tm.id" v-for="tm in trademarkList" :key="tm.id"></el-option>
       </el-select>
     </el-form-item>
 
     <el-form-item label="SPU描述">
-      <el-input type="textarea" placeholder="SPU描述" rows="4"></el-input>
+      <el-input type="textarea" placeholder="SPU描述" rows="4" v-model="spuInfo.description"></el-input>
     </el-form-item>
 
     <el-form-item label="SPU图片">
+      <!-- 
+        file-list: 指定显示的图片列表数组 [{name: 'food.jpg', url: 'https://xxx.cdn.com/xxx.jpg'}]
+      -->
       <el-upload
+        :file-list="spuImageList"
         action="https://jsonplaceholder.typicode.com/posts/"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
@@ -137,6 +140,13 @@ export default {
       const result = await this.$API.sku.getSpuImageList(this.spuId)
       // 取出data数据
       const spuImageList = result.data
+
+      // 给spuImageList中每个图片对象都添加name和url属性, 属性值为对应的属性值
+      spuImageList.forEach(item => {
+        item.name = item.imgName
+        item.url = item.imgUrl
+      })
+
       // 更新目标
       this.spuImageList = spuImageList
     },
