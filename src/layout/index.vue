@@ -1,10 +1,11 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <!-- 在移动端模式下: 用来点击关闭左侧菜单导航的遮罩div -->
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" 
+      @click="handleClickOutside" />
     <!-- 左侧导航条 -->
     <sidebar class="sidebar-container" />
-    <!-- 右侧主体 -->
+    <!-- 右侧 -->
     <div class="main-container">
       <!-- 上部导航条 -->
       <div :class="{'fixed-header':fixedHeader}">
@@ -13,7 +14,6 @@
       <!-- 应用主体部分: 路由组件在其中显示 -->
       <app-main />
     </div>
-
   </div>
 </template>
 
@@ -29,15 +29,24 @@ export default {
     Sidebar,
     AppMain
   },
+  // 配置mixin
   mixins: [ResizeMixin],
   computed: {
-    
+    /* 
+    得到包含导航是否打开及是否不需要动画的标识属性的对象
+    */
     sidebar() {
       return this.$store.state.app.sidebar
     },
+    /* 
+    得到当前显示设备名: desktop/mobile
+    */
     device() {
       return this.$store.state.app.device
     },
+    /* 
+    是否固定NavBar
+    */
     fixedHeader() {
       return this.$store.state.settings.fixedHeader
     },
@@ -48,29 +57,25 @@ export default {
       device: state => state.app.device,
       fixedHeader: state => state.settings.fixedHeader,
     }), */
-
-    /* 
-    sidebar() {
-      return this.$store.getters.sidebar
-    },
-    device() {
-      return this.$store.getters.device
-    },
-    fixedHeader() {
-      return this.$store.getters.fixedHeader
-    }, */
+ 
     // ...mapGetters(['sidebar', 'device', 'fixedHeader']),
 
+    /* 
+    多个动态类名的对象
+    */
     classObj() {
       return {
-        hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opened,
-        withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === 'mobile'
+        hideSidebar: !this.sidebar.opened, // 是否折叠菜单导航
+        openSidebar: this.sidebar.opened, // 是否打开菜单导航
+        withoutAnimation: this.sidebar.withoutAnimation, // 是否不需要动画效果
+        mobile: this.device === 'mobile', // 是否是mobile模式
       }
     }
   },
   methods: {
+    /* 
+    点击折叠菜单导航
+    */
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     }

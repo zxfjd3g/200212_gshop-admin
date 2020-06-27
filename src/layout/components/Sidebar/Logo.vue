@@ -25,8 +25,8 @@ export default {
   },
   data() {
     return {
-      title: settings.title,
-      logo: '/images/logo.png'
+      title: settings.title, // 标题
+      logo: '/images/logo.png' // LOGO图片
     }
   }
 }

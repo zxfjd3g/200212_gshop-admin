@@ -32,7 +32,7 @@
         <template slot-scope="scope">
           <HintButton v-if="$hasBP('category.add')" title="添加子分类" :disabled="!scope.row.level" 
             size="mini" type="primary" icon="el-icon-plus"/>
-          <HintButton v-if="$hasBP('category.edit')" title="修改分类" 
+          <HintButton v-if="$hasBP('category.update')" title="修改分类" 
             size="mini" type="primary" icon="el-icon-edit"/>
           <HintButton v-if="$hasBP('category.remove')" title="删除分类" 
             size="mini" type="danger" icon="el-icon-delete"/>

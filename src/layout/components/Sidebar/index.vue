@@ -23,7 +23,7 @@
 import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
-import variables from '@/styles/variables.scss'
+import variables from '@/styles/variables.scss' // 包含多个颜色值的对象
 
 export default {
   components: { SidebarItem, Logo },
@@ -33,6 +33,9 @@ export default {
       'routes'
     ]),
     
+    /* 
+    得到激活的菜单的路径
+    */
     activeMenu() {
       const route = this.$route
       const { meta, path } = route
@@ -42,12 +45,23 @@ export default {
       }
       return path
     },
+
+    /* 
+    是否显示Logo
+    */
     showLogo() {
       return this.$store.state.settings.sidebarLogo
     },
+
+    /* 
+    包含多个颜色值的对象
+    */
     variables() {
       return variables
     },
+    /* 
+    是否折叠
+    */
     isCollapse() {
       return !this.sidebar.opened
     }

@@ -39,6 +39,6 @@ export default {
 }
 
 .hamburger.is-active {
-  transform: rotate(180deg);
+  transform: rotate(90deg);
 }
 </style>

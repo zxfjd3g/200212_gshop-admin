@@ -1,6 +1,7 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" 
+      @toggleClick="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
 
@@ -42,9 +43,17 @@ export default {
     ])
   },
   methods: {
+
+    /* 
+    切换菜单导航的显示
+    */
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
+
+    /* 
+    请求退出登陆, 并跳转到登陆界面
+    */
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)

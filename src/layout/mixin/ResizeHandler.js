@@ -1,3 +1,6 @@
+/* 
+监视当前显示的设备是浏览器还是手机 ==> 通知vuex更新状态数据 ==> 界面做相应的更新显示 
+*/
 import store from '@/store'
 
 const { body } = document

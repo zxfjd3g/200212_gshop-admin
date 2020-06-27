@@ -161,20 +161,18 @@ export default {
         return
       }
 
-      // 发添加或更新的请求
-      const result= await this.$API.attr.save(attr)  // attr中有id是更新, 没有id是保存
-      
-      // 如果成功了
-      if (result.code===200) {
+      try {
+         // 发添加或更新的请求
+        const result= await this.$API.attr.save(attr)  // attr中有id是更新, 没有id是保存
         // 提示成功
         this.$message.success('保存属性成功')
         // 显示列表界面
         this.isShowList = true
         // 重新获取属性列表显示
         this.getAttrs()
-      } else {
+      } catch (error) { // 可以不用catch
         // 如果失败了, 提示请求失败
-        this.$message.error('保存属性失败')
+        // this.$message.error('保存属性失败')
       }
     },
 

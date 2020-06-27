@@ -45,8 +45,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       loginAPI.login(username.trim(), password).then(result => {
         const { data } = result
-        setToken(data.token)
-        commit('SET_TOKEN', data.token)
+        setToken(data.token) // 将token保存到cookie中
+        commit('SET_TOKEN', data.token) // 将token保存到state中
         resolve()
       }).catch(error => {
         reject(error)
@@ -105,17 +105,20 @@ const actions = {
   /* 
   删除token与重置状态
   */
-  resetToken({ commit }) {
+  async resetToken({ commit }) {
+    /* 
     return new Promise(resolve => {
       removeToken() // must remove  token  first
       commit('RESET_STATE')
       resolve()
-    })
+    }) */
+    removeToken() // must remove  token  first
+    commit('RESET_STATE')
   }
 }
 
 export default {
-  namespaced: true,
+  namespaced: true, // dipatch('user/getInfo')
   state,
   mutations,
   actions

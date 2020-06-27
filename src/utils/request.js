@@ -61,6 +61,7 @@ service.interceptors.response.use(
       // 返回了一个失败的promise
       // return Promise.reject(new Error(result.data || result.message || '未知错误'))
       return Promise.reject(new Error(result.message || '未知错误'))
+      // throw new Error(result.message || '未知错误')
     } else {
       return result
     }

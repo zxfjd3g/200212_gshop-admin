@@ -12,6 +12,7 @@
       <template slot="title">
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
+      <!-- 递归组件 -->
       <sidebar-item
         v-for="child in item.children"
         :key="child.path"
@@ -32,9 +33,9 @@ import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
 
 export default {
-  name: 'SidebarItem',
+  name: 'SidebarItem', // 递归组件必须指定name, 且标签名就是name
   components: { Item, AppLink },
-  mixins: [FixiOSBug],
+  mixins: [FixiOSBug], // 引入处理ios bug的mixin
   props: {
     // route object
     item: {
@@ -57,6 +58,9 @@ export default {
     return {}
   },
   methods: {
+    /* 
+    判断是否只有一个子菜单项
+    */
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden) {
@@ -81,6 +85,10 @@ export default {
 
       return false
     },
+
+    /* 
+    处理外链与路由链接
+    */
     resolvePath(routePath) {
       if (isExternal(routePath)) {
         return routePath

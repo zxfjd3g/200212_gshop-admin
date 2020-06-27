@@ -162,8 +162,11 @@ export default {
     /* 
     全选勾选状态发生改变的监听
     */
-    handleCheckAllChange (value) {
+    handleCheckAllChange (value) {// value 当前勾选状态true/false
+      // 如果当前全选, userRoleIds就是所有角色id的数组, 否则是空数组
       this.userRoleIds = value ? this.allRoles.map(item => item.id) : []
+      // 如果当前不是全选也不全不选时, 指定为false
+      this.isIndeterminate = false
     },
 
     /* 
