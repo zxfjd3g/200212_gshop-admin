@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-card style="margin-bottom: 20px">
+    <el-card style="margin-bottom: 20px" v-show="!isShowSkuForm">
       <CategorySelector @categoryChange="handleCategoryChange"></CategorySelector>
     </el-card>
     <el-card>
-      <div v-show="!isShowSpuForm">
+      <div v-show="!isShowSpuForm && !isShowSkuForm">
         <el-button type="primary" icon="el-icon-plus" @click="showSpuAdd">添加SPU</el-button>
 
         <el-table border :data="spuList">
@@ -13,7 +13,8 @@
           <el-table-column label="SPU描述" prop="description"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="{row, $index}">
-              <hint-button title="添加SKU" type="primary" icon="el-icon-plus" size="mini" />
+              <hint-button title="添加SKU" type="primary" icon="el-icon-plus" size="mini" 
+                @click="showSkuAdd(row)"/>
               <hint-button title="修改SPU" type="primary" icon="el-icon-edit" size="mini" 
                 @click="showSpuUpdate(row)"/>
               <hint-button title="查看所有SKU" type="info" icon="el-icon-info" size="mini" 
@@ -41,6 +42,8 @@
       <SpuForm :visible.sync="isShowSpuForm" ref="spuForm" 
         @success="handleSuccess" @cancel="handleCancel"></SpuForm>
       <!-- <SpuForm :visible="isShowSpuForm" @update:visible="isShowSpuForm=$event"></SpuForm> -->
+
+      <SkuForm v-show="isShowSkuForm" ref="spuForm"></SkuForm>
     </el-card>
 
     <el-dialog :title="`${spu.spuName} => SKU列表`" :visible.sync="isShowDialog">
@@ -60,6 +63,7 @@
 
 <script>
 import SpuForm from '../components/SpuForm'
+import SkuForm from '../components/SkuForm'
 export default {
   name: 'SpuList',
 
@@ -73,6 +77,7 @@ export default {
       page: 1, // 当前页码
       limit: 5, // 每页数量
       isShowSpuForm: false, // 是否显示Spu的添加/修改界面
+      isShowSkuForm: false, // 是否显示sku的添加/修改界面
 
       isLoading: false, // 是否正在加载中
       isShowDialog: false, // 是否显示sku列表的dialog
@@ -91,6 +96,21 @@ export default {
   },
 
   methods: {
+
+    /* 
+    显示sku的添加界面
+    */
+    showSkuAdd (spu) { // spu中有 id / spuName / category3Id
+      this.isShowSkuForm = true 
+
+      // 准备需要传递给SkuForm的数据对象
+      spu = {...spu} // 做浅拷贝  ==> 不想下面改变列表中的spu对象
+      spu.category1Id = this.category1Id
+      spu.category2Id = this.category2Id
+
+      // 让SkuForm发请求获取需要的数据
+      this.$refs.spuForm.initLoadAddData(spu)
+    },
 
     /* 
     显示指定SPU下的SKU列表
@@ -213,7 +233,8 @@ export default {
   },
 
   components: {
-    SpuForm
+    SpuForm,
+    SkuForm
   }
 }
 </script>

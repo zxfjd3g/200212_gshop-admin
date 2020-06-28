@@ -192,6 +192,28 @@
 
 ## 显示spu下对应的SKU列表
 	请求获取指定spu的SKU列表: sku.getListBySpuId(spuId)
+	Dialog / Table
+
+## SkuForm
+	1) 布局界面: Form / Input / Select / Table / Button / Tag
+
+	2) 请求获取初始显示需要的数据
+		根据3个级别的分类ID获取所有平台属性列表: attr.getList (category1Id, category2Id, category3Id) 
+		根据spuId获取SPU图片列表: sku.getSpuImageList(spuId)
+		根据spuId获取spu销售属性列表: sku.getSpuSaleAttrList(spuId)
+
+		条件数据从父组件传递过来
+
+	3) 动态显示数据(可能需要整理请求得到的数据)
+
+	4). 交互收集数据
+
+	5). 发ajax请求前, 整理需要提交的数据
+
+	6). 提交请求, 并根据结果进行界面更新
+	
+	
+
 	
 ## 编码任务列表
 	1--实现: 定义SPU与SKU相关接口请求函数
@@ -209,3 +231,4 @@
 	13--实现: 删除SPU
 	14--实现: 显示spu下对应的SKU列表
 	15--实现: SKU添加界面布局
+	16--实现: 动态获取要显示的数据
