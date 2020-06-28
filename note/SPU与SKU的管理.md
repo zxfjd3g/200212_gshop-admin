@@ -356,10 +356,51 @@
 
 
 	5). 发ajax请求前, 整理需要提交的数据
+		整理1: 平台属性
+			目标数据: skuInfo.skuAttrValueList
+				{
+			      "attrId": "2",
+			      "valueId": "9"
+			    }
+			现有数据: attrList
+				{
+					attrIdValueId: '2:9' // 可能没有
+				}
+
+		整理2: 销售属性
+			目标数据: spuInfo.skuSaleAttrValueList
+				{
+			      "saleAttrValueId": 258  
+			    }
+			现有数据: spuSaleAttrList
+				{
+					saleAttrValueId: 258 // 可能没有
+				}
+
+		整理3: 图片列表
+			目标数据: spuInfo.skuImageList
+				{
+			      "imgName": "下载 (1).jpg",
+			      "imgUrl": "http://47.93.148.192:8080/xxx.jpg",
+			      "spuImgId": 337, // 当前Spu图片的id
+			      "isDefault": "1"   // 默认为"1", 非默认为"0"
+			    }
+			现有数据: selectedSpuImageList
+				{
+				    "id": 333,
+				    "spuId": 26,
+				    "imgName": "rBHu8l6UcKyAfzDsAAAPN5YrVxw870.jpg",
+				    "imgUrl": "http://47.93.148.192:8080/xxx.jpg",
+					"isDefault": "1" / "0"
+				}
 
 	6). 提交请求, 并根据结果进行界面更新
-	
-	
+		发送保存的ajax请求
+		提示成功
+		重置数据
+		通知父组件
+			$emit()
+			函数props
 
 	
 ## 编码任务列表
@@ -381,3 +422,4 @@
 	16--实现: SkuForm-动态获取要显示的数据
 	17--实现: SkuForm-动态显示数据
 	18--使用: 数组声明式系列方法
+	19--实现: SkuForm-收集数据

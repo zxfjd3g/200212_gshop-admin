@@ -43,7 +43,8 @@
         @success="handleSuccess" @cancel="handleCancel"></SpuForm>
       <!-- <SpuForm :visible="isShowSpuForm" @update:visible="isShowSpuForm=$event"></SpuForm> -->
 
-      <SkuForm v-show="isShowSkuForm" ref="spuForm"></SkuForm>
+      <SkuForm v-show="isShowSkuForm" ref="spuForm" 
+        @success="isShowSkuForm=false" :cancel="() => isShowSkuForm=false"></SkuForm>
     </el-card>
 
     <el-dialog :title="`${spu.spuName} => SKU列表`" :visible.sync="isShowDialog">
