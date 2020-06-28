@@ -245,6 +245,115 @@
 			}
 	
 	4). 交互收集数据
+		最终的目标数据: skuInfo对象
+			{
+			  "category3Id": 61,
+			  "spuId": 30,
+			  "tmId": 2,
+			  "skuName": "aa",
+			  "skuDesc": "aa描述",
+			  "price": "12",
+			  "weight": "2",
+			  "skuDefaultImg": "http://47.93.148.192:8080/xxx.jpg",
+			  "skuAttrValueList": [
+			    {
+			      "attrId": "2",
+			      "valueId": "9"
+			    }
+			  ],
+			  "skuSaleAttrValueList": [
+			    {
+			      "saleAttrValueId": 258
+			    }
+			  ],
+			  "skuImageList": [
+			    {
+			      "imgName": "下载 (1).jpg",
+			      "imgUrl": "http://47.93.148.192:8080/xxx.jpg",
+			      "spuImgId": 337, // 当前Spu图片的id
+			      "isDefault": "1"   // 默认为"1", 非默认为"0"
+			    }
+			  ]
+			}
+		简单的:
+			父组件传入
+			v-model直接收集好
+		平台属性: 
+			现有的: attrList
+				 {
+				    "id": 1,
+				    "attrName": "价格",
+				    "categoryId": 61,
+				    "categoryLevel": 3,
+				    "attrValueList": [
+				      {
+				        "id": 207,
+				        "valueName": "500-999",
+				        "attrId": 1
+				      }
+				    ]
+				 }
+			目标: spuInfo.skuAttrValueList
+				{
+			      "attrId": "2",
+			      "valueId": "9"
+			    }
+			收集: 给attrList中的属性对象添加一个attrIdValueId的属性
+				{
+					attrIdValueId: '2:9'
+				}
+		销售属性:
+			现有的: spuSaleAttrList
+				{
+				    "id": 136,
+				    "spuId": 30,
+				    "baseSaleAttrId": 1,
+				    "saleAttrName": "选择颜色",
+				    "spuSaleAttrValueList": [
+				      {
+				        "id": 258,
+				        "spuId": 30,
+				        "baseSaleAttrId": 1,
+				        "saleAttrValueName": "a",
+				        "saleAttrName": "选择颜色",
+				        "isChecked": null
+				      }
+				    ]
+				 }
+			目标: spuInfo.skuSaleAttrValueList
+				{
+			      "saleAttrValueId": 258  
+			    }
+				
+			收集: 给spuSaleAttrList中的属性对象添加一个saleAttrValueId属性
+				{
+					...
+					saleAttrValueId: 258
+				}
+		图片:
+			现有: spuImageList
+				{
+				    "id": 333,
+				    "spuId": 26,
+				    "imgName": "rBHu8l6UcKyAfzDsAAAPN5YrVxw870.jpg",
+				    "imgUrl": "http://47.93.148.192:8080/xxx.jpg"
+				}
+			目标: 
+				spuInfo.skuDefaultImg: "http://47.93.148.192:8080/xxx.jpg",
+				spuInfo.skuImageList数组
+					{
+				      "imgName": "下载 (1).jpg",
+				      "imgUrl": "http://47.93.148.192:8080/xxx.jpg",
+				      "spuImgId": 337, // 当前Spu图片的id
+				      "isDefault": "1"   // 默认为"1", 非默认为"0"
+				    }
+				
+			收集:
+				在请求得到spuImageList数据后需要对数据进行整理: 每个元素对象添加一个isDefault='0'
+				spuInfo.skuDefaultImg: 通过点击按钮收集
+				selectedSpuImageList数组: selection-change事件监听来收集
+				
+
 
 	5). 发ajax请求前, 整理需要提交的数据
 
