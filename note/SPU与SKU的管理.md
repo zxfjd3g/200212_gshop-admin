@@ -189,6 +189,9 @@
 ## 删除SPU
 	显示小确定框
 	点击确定后, 请求删除, 删除成功后重新显示列表
+
+## 显示spu下对应的SKU列表
+	请求获取指定spu的SKU列表: sku.getListBySpuId(spuId)
 	
 ## 编码任务列表
 	1--实现: 定义SPU与SKU相关接口请求函数
