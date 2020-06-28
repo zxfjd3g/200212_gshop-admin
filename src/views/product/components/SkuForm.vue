@@ -22,67 +22,44 @@
 
     <el-form-item label="平台属性">
       <el-form inline label-width="100px">
-        <el-form-item label="存储卡" style="margin: 5px 0">
+        <el-form-item :label="attr.attrName" style="margin: 5px 0" v-for="attr in attrList" :key="attr.id">
           <el-select value='' placeholder="请输入">
-            <el-option label="A" value="1"></el-option>
-            <el-option label="B" value="2"></el-option>
+            <el-option :label="value.valueName" :value="value.id" v-for="value in attr.attrValueList" :key="value.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="存储卡" style="margin: 5px 0">
-          <el-select value='' placeholder="请输入">
-            <el-option label="A" value="1"></el-option>
-            <el-option label="B" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="存储卡" style="margin: 5px 0">
-          <el-select value='' placeholder="请输入">
-            <el-option label="A" value="1"></el-option>
-            <el-option label="B" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="存储卡" style="margin: 5px 0">
-          <el-select value='' placeholder="请输入">
-            <el-option label="A" value="1"></el-option>
-            <el-option label="B" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="存储卡" style="margin: 5px 0">
-          <el-select value='' placeholder="请输入">
-            <el-option label="A" value="1"></el-option>
-            <el-option label="B" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        
       </el-form>
     </el-form-item>
 
     <el-form-item label="销售属性">
       <el-form inline label-width="100px">
-        <el-form-item label="存储卡" style="margin: 5px 0">
+        <el-form-item :label="attr.saleAttrName" style="margin: 5px 0" 
+          v-for="attr in spuSaleAttrList" :key="attr.id">
           <el-select value='' placeholder="请输入">
-            <el-option label="A" value="1"></el-option>
-            <el-option label="B" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="存储卡" style="margin: 5px 0">
-          <el-select value='' placeholder="请输入">
-            <el-option label="A" value="1"></el-option>
-            <el-option label="B" value="2"></el-option>
+            <el-option :label="value.saleAttrValueName" :value="value.id" 
+              v-for="value in attr.spuSaleAttrValueList" :key="value.id" />
           </el-select>
         </el-form-item>
       </el-form>
     </el-form-item>
 
     <el-form-item label="图片列表">
-      <el-table border>
+      <el-table border :data="spuImageList">
         <el-table-column
           type="selection"
           width="55">
         </el-table-column>
 
-        <el-table-column label="图片"></el-table-column>
-        <el-table-column label="名称"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="图片">
+          <template slot-scope="{row}">
+            <img :src="row.imgUrl" alt="" style="width:100px;height:100px;">
+          </template>
+        </el-table-column>
+        <el-table-column label="名称" prop="imgName"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="{row, $index}">
+            <el-button type="primary" size="small">设为默认</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-form-item>
 

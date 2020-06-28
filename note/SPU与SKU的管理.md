@@ -205,6 +205,45 @@
 		条件数据从父组件传递过来
 
 	3) 动态显示数据(可能需要整理请求得到的数据)
+		平台属性列表: attrList
+			 {
+			    "id": 1,
+			    "attrName": "价格",
+			    "categoryId": 61,
+			    "categoryLevel": 3,
+			    "attrValueList": [
+			      {
+			        "id": 207,
+			        "valueName": "500-999",
+			        "attrId": 1
+			      }
+			    ]
+			  }
+		SPU销售属性列表: spuSaleAttrList
+			{
+			    "id": 136,
+			    "spuId": 30,
+			    "baseSaleAttrId": 1,
+			    "saleAttrName": "选择颜色",
+			    "spuSaleAttrValueList": [
+			      {
+			        "id": 258,
+			        "spuId": 30,
+			        "baseSaleAttrId": 1,
+			        "saleAttrValueName": "a",
+			        "saleAttrName": "选择颜色",
+			        "isChecked": null
+			      }
+			    ]
+			 }
+		SPU图片列表: spuImageList
+			{
+			    "id": 333,
+			    "spuId": 26,
+			    "imgName": "rBHu8l6UcKyAfzDsAAAPN5YrVxw870.jpg",
+			    "imgUrl": "http://47.93.148.192:8080/xxx.jpg"
+			}
+	
 
 	4). 交互收集数据
 
@@ -232,3 +271,4 @@
 	14--实现: 显示spu下对应的SKU列表
 	15--实现: SKU添加界面布局
 	16--实现: 动态获取要显示的数据
+	17--实现: 动态显示数据
