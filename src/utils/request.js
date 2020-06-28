@@ -42,25 +42,27 @@ service.interceptors.response.use(
     if (result.code !== 20000 && result.code !== 200) {
 
       // 如果响应数据的code是201/20001: 删除系统数据失败, 只需要在当前统一提示, 不需要外部再提示
-      if (result.code===201) {
-        Message.error(result.data || '未知错误')
-        return new Promise(() => {})   // 返回一个pending状态的promise ==> 中断promise链
-      } else if (result.code===20001) {
-        Message.error(result.message || '未知错误')
-        return new Promise(() => {})
-      }
+      // if (result.code===201) {
+      //   Message.error(result.data || result.message || '未知错误')
+      //   // return new Promise(() => {})   // 返回一个pending状态的promise ==> 中断promise链
+      //   return Promise.reject(new Error(result.data || result.message || '未知错误'))
+      // } else if (result.code===20001) {
+      //   Message.error(result.data || result.message || '未知错误')
+      //   // return new Promise(() => {})
+      //   return Promise.reject(new Error(result.data || result.message || '未知错误'))
+      // }
       
       // 提示业务请求操作不成功
       Message({
-        message: result.message || 'Error',
+        message: result.data || result.message || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
       
 
-      // 返回了一个失败的promise
+      // 返回了一个失败的promise  ==> 后面可以选择处理或不处理错误
       // return Promise.reject(new Error(result.data || result.message || '未知错误'))
-      return Promise.reject(new Error(result.message || '未知错误'))
+      return Promise.reject(new Error(result.data || result.message || '未知错误'))
       // throw new Error(result.message || '未知错误')
     } else {
       return result

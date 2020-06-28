@@ -75,9 +75,9 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="150">
-          <template slot-scope="{$index}">
+          <template slot-scope="{row, $index}">
             <hint-button title="删除" type="danger" icon="el-icon-delete" size="mini" 
-              @click="spuInfo.spuSaleAttrList.splice($index, 1)"/>
+                @click="spuInfo.spuSaleAttrList.splice($index, 1)"/>
           </template>
         </el-table-column>
       </el-table>
@@ -159,6 +159,7 @@ export default {
   },
 
   methods: {
+
     /* 
     重置数据
     */

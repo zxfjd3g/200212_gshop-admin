@@ -17,7 +17,16 @@
               <hint-button title="修改SPU" type="primary" icon="el-icon-edit" size="mini" 
                 @click="showSpuUpdate(row)"/>
               <hint-button title="查看所有SKU" type="info" icon="el-icon-info" size="mini" />
-              <hint-button title="删除SPU" type="danger" icon="el-icon-delete" size="mini" />
+              
+
+              <el-popconfirm
+              :title="`确定删除 ${row.spuName} 吗?`"
+              @onConfirm="deleteSpu(row.id)"
+            >
+                <hint-button slot="reference" title="删除SPU" type="danger" icon="el-icon-delete" size="mini" />
+            </el-popconfirm>
+
+              
             </template>
           </el-table-column>
         </el-table>
@@ -67,6 +76,18 @@ export default {
   },
 
   methods: {
+
+    /* 
+    删除指定spu
+    */
+    async deleteSpu (spuId) {
+      // 发送ajax请求
+      const result = await this.$API.spu.remove(spuId)
+      // 提示成功
+      this.$message.success('删除SPU成功')
+      // 重新获取列表显示
+      this.getSpuList()
+    },
 
     /* 
     保存(添加/更新)成功的事件回调
