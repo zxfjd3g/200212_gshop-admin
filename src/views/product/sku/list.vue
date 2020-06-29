@@ -5,7 +5,9 @@
         type="index"
         label="序号"
         width="80"
-        align="center" />
+        align="center"
+        row-key="id">
+      </el-table-column>
 
       <el-table-column prop="skuName" label="名称" />
 
@@ -34,10 +36,10 @@
             icon="el-icon-bottom" @click="cancelSale(row.id)" />
 
           <HintButton title="修改" type="primary" size="mini"
-            icon="el-icon-edit" @click="showSkuUpdate(row.id)" />
+            icon="el-icon-edit" @click="toUpdateSku(row.id)" />
 
           <HintButton title="查看详情" type="info" size="mini"
-            icon="el-icon-info"/>
+            icon="el-icon-info" @click="showSkuInfo(row.id)" />
 
           <el-popconfirm :title="`确定删除 ${row.skuName} 吗`" @onConfirm="deleteSku(row.id)">
             <hint-button slot="reference" type="danger" size="mini" icon="el-icon-delete" title="删除"></hint-button>
@@ -56,6 +58,53 @@
       @current-change="getSkuList"
       @size-change="changeSize"
     />
+
+    <el-drawer
+      :visible.sync="isShowSkuInfo"
+      :with-header="false"
+      size="50%">
+      <el-row>
+        <el-col :span="5">名称</el-col>
+        <el-col :span="16">{{skuInfo.skuName}}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="5">描述</el-col>
+        <el-col :span="16">{{skuInfo.skuDesc}}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="5">价格</el-col>
+        <el-col :span="16">{{skuInfo.price}}</el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="5">平台属性</el-col>
+        <el-col :span="18">
+          <el-tag type="success" style="margin-right: 5px" v-for="value in skuInfo.skuAttrValueList" :key="value.id">
+              {{value.attrId + '-' + value.valueId}}
+          </el-tag>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="5">销售属性</el-col>
+        <el-col :span="18">
+          <el-tag type="success" style="margin-right: 5px" v-for="value in skuInfo.skuSaleAttrValueList" :key="value.id">
+              {{value.id + '-' + value.saleAttrValueId}}
+          </el-tag>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="5">商品图片</el-col>
+        <el-col :span="16">
+           <el-carousel class="sku-carousel" trigger="click" height="400px">
+              <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item.id">
+                <img :src="item.imgUrl" alt="">
+              </el-carousel-item>
+            </el-carousel>
+        </el-col>
+      </el-row>
+    </el-drawer>
   </el-card>
 </template>
 
@@ -70,6 +119,8 @@ export default {
       total: 0, // 数据库中的总记录数
       page: 1, // 默认页码
       limit: 10, // 每页记录数
+      skuInfo: {},
+      isShowSkuInfo: false
     }
   },
 
@@ -78,6 +129,13 @@ export default {
   },
 
   methods: {
+
+    async showSkuInfo (id) {
+      this.isShowSkuInfo = true
+      const result = await this.$API.sku.get(id)
+      this.skuInfo = result.data
+    },
+
 
     /*
     异步获取指定页码的sku列表
@@ -139,14 +197,68 @@ export default {
           type: 'error'
         })
       }
-    },
-
-    /* 
-    显示SKU修改界面
-    */
-    showSkuUpdate () {
-      alert('开发中...')
     }
   }
 }
 </script>
+<style lang="scss"> /* 可以影响子组件 */
+  /* .sku-list {
+    .el-carousel__indicator {
+      button {
+        background-color: green;
+      }
+      &.is-active {
+        button {
+          background-color: hotpink;
+        }
+      }
+    }
+  } */
+</style>
+
+<style lang="scss" scoped>
+  /* 
+    1. 为什么必须加/deep/才能修改Carousel组件的样式?, 
+      声明了scoped, 不用deep不能修改子组件的非标签样式(也就是Carousel组件内部的子标签样式)
+      用了deep: 不会对目标标签有当前组件的data属性选择的要求
+    2. 为什么不加/deep/能修改Row/Col组件的样式?
+      我们修改的是Row/Col根标签样式(它有当前组件的data属性)
+  */
+  .sku-list {
+    .el-row {
+      height: 40px;
+      .el-col {
+        line-height: 40px;
+        &.el-col-5 {
+          font-weight: bold;
+          text-align: right;
+          margin-right: 10px;
+        }
+      }
+    }
+
+    .sku-carousel {
+      width: 400px;
+      border: 1px solid black;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+      /deep/ .el-carousel__indicator {
+        button {
+          width: 8px;
+          height: 8px;
+          display: inline-block;
+          border-radius: 100%;
+          opacity: .7;
+          background-color: green;
+        }
+        &.is-active {
+          button {
+            background-color: hotpink;
+          }
+        }
+      }
+    }
+  }
+</style>

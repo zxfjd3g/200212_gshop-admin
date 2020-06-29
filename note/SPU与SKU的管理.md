@@ -354,7 +354,6 @@
 				selectedSpuImageList数组: selection-change事件监听来收集
 				
 
-
 	5). 发ajax请求前, 整理需要提交的数据
 		整理1: 平台属性
 			目标数据: skuInfo.skuAttrValueList
@@ -416,6 +415,7 @@
 	10--实现: 删除spu销售属性与spu销售属性值
 	11--实现: spu图片的上传与删除
 	12--实现: 请求添加/更新SPU
+	
 	13--实现: 删除SPU
 	14--实现: 显示spu下对应的SKU列表
 	15--实现: SkuForm-界面布局
