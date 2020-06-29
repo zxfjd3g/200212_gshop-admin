@@ -230,32 +230,28 @@ export default {
       .el-col {
         line-height: 40px;
         &.el-col-5 {
+          font-size: 18px;
           font-weight: bold;
           text-align: right;
-          margin-right: 10px;
+          margin-right: 20px;
         }
       }
     }
 
     .sku-carousel {
       width: 400px;
-      border: 1px solid black;
+      border: 1px solid #ccc;
       img {
-        width: 100%;
-        height: 100%;
+        width: 400px;
+        height: 400px;
       }
       /deep/ .el-carousel__indicator {
         button {
-          width: 8px;
-          height: 8px;
-          display: inline-block;
-          border-radius: 100%;
-          opacity: .7;
-          background-color: green;
+          background-color: hotpink;
         }
         &.is-active {
           button {
-            background-color: hotpink;
+            background-color: green;
           }
         }
       }

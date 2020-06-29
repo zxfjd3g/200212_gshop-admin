@@ -24,7 +24,7 @@
       -->
       <el-upload
         :file-list="spuImageList"
-        action="/dev-api/admin/product/fileUpload"
+        :action="`${$BASE_API}/admin/product/fileUpload`" 
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"

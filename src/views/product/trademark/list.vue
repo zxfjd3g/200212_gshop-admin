@@ -43,7 +43,7 @@
             before-upload: 在准备发上传请求前调用, 如果返回false不发请求, 用来检查文件类型和大小
           -->
           <el-upload class="avatar-uploader" 
-            action="/dev-api/admin/product/fileUpload" 
+            :action="`${$BASE_API}/admin/product/fileUpload`" 
             :show-file-list="false"
             :on-success="handleAvatarSuccess" 
             :before-upload="beforeAvatarUpload">

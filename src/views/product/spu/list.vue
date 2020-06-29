@@ -5,7 +5,7 @@
     </el-card>
     <el-card>
       <div v-show="!isShowSpuForm && !isShowSkuForm">
-        <el-button type="primary" icon="el-icon-plus" @click="showSpuAdd">添加SPU</el-button>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id" @click="showSpuAdd">添加SPU</el-button>
 
         <el-table border :data="spuList">
           <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
@@ -90,10 +90,10 @@ export default {
   async mounted () {
     // const result = await this.$API.spu.getList(1, 3, 61)
     // console.log('result---', result)
-    this.category1Id = 2
-    this.category2Id = 13
-    this.category3Id = 61
-    this.getSpuList(1)
+    // this.category1Id = 2
+    // this.category2Id = 13
+    // this.category3Id = 61
+    // this.getSpuList(1)
   },
 
   methods: {
